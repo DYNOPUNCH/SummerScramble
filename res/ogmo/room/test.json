@@ -1,0 +1,94 @@
+{
+  "ogmoVersion": "3.4.0",
+  "width": 480,
+  "height": 270,
+  "offsetX": 0,
+  "offsetY": 0,
+  "layers": [
+    {
+      "name": "entity",
+      "_eid": "17855462",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 8,
+      "gridCellHeight": 8,
+      "gridCellsX": 60,
+      "gridCellsY": 35,
+      "entities": [
+        {
+          "name": "GoToRoom",
+          "id": 0,
+          "_eid": "18015899",
+          "x": 32,
+          "y": 184,
+          "width": 152,
+          "height": 56,
+          "originX": 0,
+          "originY": 0,
+          "values": {"room": "apartment/pool"}
+        },
+        {
+          "name": "GoToRoom",
+          "id": 1,
+          "_eid": "18015899",
+          "x": 264,
+          "y": 184,
+          "width": 184,
+          "height": 56,
+          "originX": 0,
+          "originY": 0,
+          "values": {"room": "apartment/crime-scene"}
+        },
+        {
+          "name": "DebugLabel",
+          "id": 2,
+          "_eid": "84521398",
+          "x": 72,
+          "y": 48,
+          "width": 328,
+          "height": 32,
+          "originX": 0,
+          "originY": 0,
+          "values": {"text": "Welcome to the Summer Scramble demo!", "color": "#ffffffff"}
+        },
+        {
+          "name": "DebugLabel",
+          "id": 3,
+          "_eid": "84521398",
+          "x": 72,
+          "y": 104,
+          "width": 328,
+          "height": 32,
+          "originX": 0,
+          "originY": 0,
+          "values": {"text": "Click the boxes to explore!", "color": "#ffffffff"}
+        },
+        {
+          "name": "Example",
+          "id": 4,
+          "_eid": "96395444",
+          "x": 568,
+          "y": -40,
+          "rotation": 0,
+          "flippedX": false,
+          "flippedY": false,
+          "values": {"myBoolean": false, "myColor": "#000000ff", "myEnum": "c 1", "myFilepath": "lvl:apartment/crime-scene.json", "myFloat": 0, "myInteger": 0, "myString": "", "myText": "a\nb\nc"}
+        }
+      ]
+    },
+    {
+      "name": "background",
+      "_eid": "17851965",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 5,
+      "gridCellHeight": 5,
+      "gridCellsX": 96,
+      "gridCellsY": 54,
+      "decals": [
+        {"x": 240, "y": 135, "texture": "green.png", "originX": 0.5, "originY": 0.5}
+      ],
+      "folder": "decal"
+    }
+  ]
+}

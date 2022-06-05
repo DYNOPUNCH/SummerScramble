@@ -1,0 +1,59 @@
+{
+  "ogmoVersion": "3.4.0",
+  "width": 480,
+  "height": 270,
+  "offsetX": 0,
+  "offsetY": 0,
+  "layers": [
+    {
+      "name": "entity",
+      "_eid": "17855462",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 8,
+      "gridCellHeight": 8,
+      "gridCellsX": 60,
+      "gridCellsY": 35,
+      "entities": [
+        {
+          "name": "DebugLabel",
+          "id": 0,
+          "_eid": "84521398",
+          "x": 24,
+          "y": 24,
+          "width": 336,
+          "height": 56,
+          "originX": 0,
+          "originY": 0,
+          "values": {"text": "What transpired here?\\nGlasses are on the ground.\\nThe shape of a victim can be made out...", "color": "#ffffffff"}
+        },
+        {
+          "name": "GoToRoom",
+          "id": 1,
+          "_eid": "18015899",
+          "x": 336,
+          "y": 200,
+          "width": 120,
+          "height": 48,
+          "originX": 0,
+          "originY": 0,
+          "values": {"room": "test"}
+        }
+      ]
+    },
+    {
+      "name": "background",
+      "_eid": "17851965",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 5,
+      "gridCellHeight": 5,
+      "gridCellsX": 96,
+      "gridCellsY": 54,
+      "decals": [
+        {"x": 240, "y": 135, "texture": "test/crime-scene.png", "originX": 0.5, "originY": 0.5}
+      ],
+      "folder": "decal"
+    }
+  ]
+}

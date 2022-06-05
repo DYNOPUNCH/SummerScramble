@@ -1,0 +1,179 @@
+{
+  "name": "Summer Scramble",
+  "ogmoVersion": "3.4.0",
+  "levelPaths": ["."],
+  "backgroundColor": "#282c34ff",
+  "gridColor": "#3c4049cc",
+  "anglesRadians": true,
+  "directoryDepth": 5,
+  "layerGridDefaultSize": {"x": 8, "y": 8},
+  "levelDefaultSize": {"x": 320, "y": 240},
+  "levelMinSize": {"x": 480, "y": 270},
+  "levelMaxSize": {"x": 1920, "y": 270},
+  "levelValues": [],
+  "defaultExportMode": ".json",
+  "compactExport": false,
+  "externalScript": "",
+  "playCommand": "",
+  "entityTags": [],
+  "layers": [
+    {
+      "definition": "entity",
+      "name": "entity",
+      "gridSize": {"x": 8, "y": 8},
+      "exportID": "17855462",
+      "requiredTags": [],
+      "excludedTags": []
+    },
+    {
+      "definition": "decal",
+      "name": "background",
+      "gridSize": {"x": 5, "y": 5},
+      "exportID": "17851965",
+      "folder": "decal",
+      "includeImageSequence": true,
+      "scaleable": false,
+      "rotatable": false,
+      "values": []
+    }
+  ],
+  "entities": [
+    {
+      "exportID": "18015899",
+      "name": "GoToRoom",
+      "limit": -1,
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": false,
+      "tags": [],
+      "values": [
+        {"name": "room", "definition": "String", "display": 0, "defaults": "test", "maxLength": 0, "trimWhitespace": true}
+      ]
+    },
+    {
+      "exportID": "84521398",
+      "name": "DebugLabel",
+      "limit": -1,
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "text", "definition": "String", "display": 0, "defaults": "", "maxLength": 0, "trimWhitespace": true},
+        {"name": "color", "definition": "Color", "display": 0, "defaults": "#000000ff", "includeAlpha": false}
+      ]
+    },
+    {
+      "exportID": "96395444",
+      "name": "Example",
+      "limit": -1,
+      "size": {"x": 64, "y": 64},
+      "origin": {"x": 32, "y": 64},
+      "originAnchored": false,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": true,
+      "tileY": true,
+      "tileSize": {"x": 64, "y": 64},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": true,
+      "rotationDegrees": 360,
+      "canFlipX": true,
+      "canFlipY": true,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "myBoolean", "definition": "Boolean", "display": 0, "defaults": false},
+        {"name": "myColor", "definition": "Color", "display": 0, "defaults": "#000000ff", "includeAlpha": false},
+        {
+          "name": "myEnum",
+          "definition": "Enum",
+          "display": 0,
+          "choices": ["a", "b", "c", "c 1"],
+          "defaults": 0
+        },
+        {
+          "name": "myFilepath",
+          "definition": "Filepath",
+          "display": 0,
+          "defaults": "proj:",
+          "extensions": []
+        },
+        {"name": "myFloat", "definition": "Float", "display": 0, "defaults": 0, "bounded": false, "min": 0, "max": 100},
+        {"name": "myInteger", "definition": "Integer", "display": 0, "defaults": 0, "bounded": false, "min": 0, "max": 100},
+        {"name": "myString", "definition": "String", "display": 0, "defaults": "", "maxLength": 0, "trimWhitespace": true},
+        {"name": "myText", "definition": "Text", "display": 0, "defaults": ""}
+      ],
+      "texture": "sprite/test.png",
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9ba0UqFewg4pChOlmQKuKoVShChVArtOpgcumH0KQhSXFxFFwLDn4sVh1cnHV1cBUEwQ8QRycnRRcp8X9JoUWMB8f9eHfvcfcO8DcqTDW7xgFVs4xMKink8itC6BXdCKIfCUQkZuqzopiG5/i6h4+vd3Ge5X3uz9GnFEwG+ATiGaYbFvE68dSmpXPeJ46ysqQQnxOPGXRB4keuyy6/cS457OeZUSObmSOOEgulDpY7mJUNlXiSOKaoGuX7cy4rnLc4q5Uaa92TvzBc0JaXuE5zGCksYBEiBMioYQMVWIjTqpFiIkP7SQ//kOMXySWTawOMHPOoQoXk+MH/4He3ZnEi4SaFk0DwxbY/RoDQLtCs2/b3sW03T4DAM3Cltf3VBjD9SXq9rcWOgMg2cHHd1uQ94HIHGHzSJUNypABNf7EIvJ/RN+WBgVugd9XtrbWP0wcgS12lb4CDQ2C0RNlrHu/u6ezt3zOt/n4AVQtym5kptHcAAAAGYktHRAC5AKMAijLHWB0AAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfmBgUQMy0Zxc2YAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAaZJREFUeNrtWtsNwyAMDIjZMkXWyBLtGO0S7XLtV6s0ggb8IBgOqVI/EiU+39k+gnvcLq9p4OWnwRcAAAAAAAAAAAAAAAAAABh1hZyL5mX9/n/er2MzYF7WH0CsL1fiBmOBW2eEo9jhnoAgFcFYsFalId4FrAHhqUFu2fD5HcmkewbEgOhiDiidCSyBgFFYOvvwAr0C0KsfgBvUyn5qDmiNPdUnwdYGpCCZ/X1wqelwXtZmmKBWA2IBtlg8vVb2qTXCJANiwVhxhYFK56Nrt3qndo8aknESByRSL/2PASX2WRMI1UFIyh5rSinU0NleFiW0L2mdpXKrPgqndo9y608uE0oY4yUzTKUrVSbbZ1GLp5emOVezlHmC8zwnfUyOU82PshirA9xvFE7rnGCuL/gXEMd55t6r1gWoun7er6TK39WGCLWeULrM6QBwNk4kxmbfapZrGalwNtX3ponrP8zVgKOX13aEYWpgpeSQCl7SMjcBAHfvobs2WNMa49OY5ZeXYIM5AKRPophkwHbc5RZC0xIYsgugCAIAAAAAAAAAAAAAQGq9AWLc7+1NNvCCAAAAAElFTkSuQmCC"
+    }
+  ],
+  "tilesets": []
+}
