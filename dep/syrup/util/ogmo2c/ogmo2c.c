@@ -430,6 +430,7 @@ struct OgmoProject
 	int entitiesCount; /* extra */
 	void *layers; /* TODO */
 	void *tilesets; /* TODO */
+	char *relpath; /* extra */
 };
 
 static struct OgmoProject *gOgmoProject = 0;
@@ -1299,6 +1300,23 @@ static struct OgmoProject *OgmoProjectLoad(const char *fn)
 	ogmo = calloc(1, sizeof(*ogmo));
 	assert(ogmo);
 	
+	{
+		ogmo->relpath = myStrdup(fn);
+		char *s;
+		char *s1;
+		s = strrchr(ogmo->relpath, '/');
+		s1 = strrchr(ogmo->relpath, '\\');
+		s = s > s1 ? s : s1;
+		
+		if (!s)
+		{
+			fprintf(stderr, "expected path in '%s'\n", fn);
+			exit(EXIT_FAILURE);
+		}
+		
+		*s = '\0';
+	}
+	
 	for (now = head->child; now; now = now->next)
 	{
 		FIRSTCASE("name")
@@ -1443,6 +1461,8 @@ static void writeClasses(const char *outfn, struct OgmoProject *ogmo)
 
 static void writeRooms(const char *outfn, struct OgmoProject *ogmo)
 {
+	char where[4096];
+	
 	assert(outfn);
 	assert(ogmo);
 	
@@ -1460,7 +1480,8 @@ static void writeRooms(const char *outfn, struct OgmoProject *ogmo)
 		" */\n\n"
 	);
 	
-	handleDirectory("res/ogmo/room");
+	snprintf(where, 4096, "%s/room", ogmo->relpath);
+	handleDirectory(where);
 	
 	gOut_redirect(0);
 }
