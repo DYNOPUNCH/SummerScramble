@@ -532,7 +532,7 @@ unsigned GameGetWindowMaxSize(struct Game *game)
 unsigned GameGetFullscreenSize(struct Game *game)
 {
 	SDL_DisplayMode dm;
-	unsigned scale = 0;
+	int scale = 0;
 	
 	assert(game);
 	assert(game->SDL.window);
@@ -554,8 +554,8 @@ unsigned GameGetFullscreenSize(struct Game *game)
 /* increment (1) or decrement (-1) window size (0 = simple refresh) */
 void GameUpdateWindowSize(struct Game *game, int n)
 {
-	unsigned scaleMax;
-	unsigned scale;
+	int scaleMax;
+	int scale;
 	
 	assert(game);
 	assert(n == 1 || n == -1 || n == 0);
