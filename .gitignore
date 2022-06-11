@@ -1,6 +1,7 @@
 bin/
 src/tmp
 res/*.png
+cbp/bin
 cbp/obj
 cbp/SummerScramble.depend
 cbp/SummerScramble.layout
