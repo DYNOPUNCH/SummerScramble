@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SummerScramble" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/SummerScramble" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../res" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-Li686-w64-mingw32\\lib" />
+					<Add option="-Li686-w64-mingw32//lib" />
+					<Add directory="../dep" />
+					<Add directory="../dep/syrup" />
+					<Add directory="../src" />
+					<Add directory="../src/entity/headers" />
+				</Compiler>
+				<Linker>
+					<Add option="-lSDL2" />
+				</Linker>
+				<ExtraCommands>
+					<Add before='cmd /c echo &quot;Pre-build steps&quot;' />
+					<Add before="util/win64/ezspritesheet-cli  -i ../res/gfx -o ../src/tmp/gfx.h -s c99 -m maxrects -a 1024x1024 -e -t -d -c 00ff00" />
+					<Add before="cmd /c move /Y ..\\src\\tmp\\*.png ..\\res" />
+					<Add before='util/win64/ogmo2c ../res/ogmo/ogmo.ogmo &quot;\t&quot; &quot;obj&quot; ../src/entity ../src/entity/headers ../src/tmp/entity-all.h ../src/tmp/entity-ids.h ../src/tmp/entity-classes.h ../src/tmp/rooms.h' />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/SummerScramble" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../dep/EzSprite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/EzSprite.h" />
+		<Unit filename="../dep/SDL_EzText.h" />
+		<Unit filename="../dep/rnd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/rnd.h" />
+		<Unit filename="../dep/stb_image.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/stb_image.h" />
+		<Unit filename="../dep/syrup/syFile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/syrup/syFile.h" />
+		<Unit filename="../dep/syrup/syOgmo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/syrup/syOgmo.h" />
+		<Unit filename="../dep/syrup/syText.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/syrup/syText.h" />
+		<Unit filename="../dep/syrup/syTsv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/syrup/syTsv.h" />
+		<Unit filename="../src/common.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/common.h" />
+		<Unit filename="../src/dialogue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/dialogue.h" />
+		<Unit filename="../src/entity/debug_draw.h" />
+		<Unit filename="../src/entity/headers/common-includes.h" />
+		<Unit filename="../src/entity/headers/objDebugLabel.h" />
+		<Unit filename="../src/entity/headers/objExample.h" />
+		<Unit filename="../src/entity/headers/objGoToRoom.h" />
+		<Unit filename="../src/entity/objDebugLabel.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/entity/objExample.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/entity/objGoToRoom.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/game.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/game.h" />
+		<Unit filename="../src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<editor_config active="1" use_tabs="1" tab_indents="0" tab_width="0" indent="0" eol_mode="0" />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
