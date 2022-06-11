@@ -13,9 +13,15 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-pedantic" />
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+					<Add option="-std=c99" />
 					<Add option="-g" />
-					<Add option="-Li686-w64-mingw32\\lib" />
-					<Add option="-Li686-w64-mingw32//lib" />
+					<Add option="-Wno-unused-function" />
+					<Add option="-Wno-unused-parameter" />
+					<Add option="-Wno-missing-field-initializers" />
+					<Add option="-Wno-override-init" />
 					<Add directory="../dep" />
 					<Add directory="../dep/syrup" />
 					<Add directory="../src" />
