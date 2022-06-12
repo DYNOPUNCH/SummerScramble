@@ -15,6 +15,7 @@
 
 #include <syOgmo.h>
 #include <syFile.h>
+#include <sySprite.h>
 
 #include "game.h"
 #include "common.h"
@@ -85,7 +86,7 @@ struct Game
 			int h;
 		} fullscreen;
 	} window;
-	struct EzSpriteContext *spriteCtx;
+	struct sySpriteContext spriteCtx;
 	int scale;
 	bool isFullscreen;
 	bool isFullscreenDisabled;
@@ -307,6 +308,58 @@ static void texture_clear(void *udata, void *fb, int x, int y, int w, int h)
 		SDL_SetRenderDrawBlendMode(ren, blendMode);
 		SDL_SetRenderDrawColor(ren, r, g, b, a);
 	}
+}
+
+static void texture_draw_sprite(
+	void *udata
+	, void *texture
+	, float x
+	, float y
+	, float pivot_x
+	, float pivot_y
+	, float degrees
+	, bool mirror_x
+	, bool mirror_y
+	, int crop_x
+	, int crop_y
+	, int crop_w
+	, int crop_h
+	, bool crop_rotate_90
+)
+{
+	struct Texture *t = texture;
+	struct Game *game = udata;
+	SDL_Texture *which;
+	SDL_Rect src = {crop_x, crop_y, crop_w, crop_h};
+	SDL_Rect dst = {x, y, crop_w, crop_h};
+	SDL_RendererFlip flip = 0;
+	
+	dst.x = roundf(game->scale * x);
+	dst.y = roundf(game->scale * y);
+	dst.w = roundf(game->scale * dst.w);
+	dst.h = roundf(game->scale * dst.h);
+	
+	if (mirror_x)
+		flip |= SDL_FLIP_HORIZONTAL;
+	if (mirror_y)
+		flip |= SDL_FLIP_VERTICAL;
+	
+	assert(t);
+	which = t->SDL.main;
+	
+	/* SDL2's builtin sprite rotation isn't crisp, so
+	 * complain if there are rotated sprites
+	 */
+	assert(crop_rotate_90 == false);
+	
+	SDL_RenderCopyEx(game->SDL.renderer
+		, which
+		, &src
+		, &dst
+		, degrees
+		, 0
+		, flip
+	);
 }
 
 static void texture_draw(
@@ -832,17 +885,19 @@ void GameInit(struct Game *g)
 		, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
 	);
 	SDL_SetRenderDrawBlendMode(g->SDL.renderer, SDL_BLENDMODE_BLEND);
-	g->spriteCtx = EzSpriteContext_new((struct EzSpriteContextInit){
+	g->spriteCtx = (struct sySpriteContext){
 		.udata = g
 		, .texture = {
 			.load = texture_load
 			, .free = texture_free
-			, .draw = texture_draw
+			, .draw = texture_draw_sprite
 		}
-		, .ticks = ticks
-	});
-	EzSpriteContext_addbank(g->spriteCtx, &gfx);
-	EzSpriteContext_loaddeps(g->spriteCtx);
+		, .EzSpriteSheetData = {
+			.EzSpriteBank = &gfx
+		}
+	};
+	sySpriteContextLoad(&g->spriteCtx);
+	sySpriteContextUse(&g->spriteCtx);
 	
 	/* room system */
 	{
@@ -866,7 +921,7 @@ void GameInit(struct Game *g)
 void GameCleanup(struct Game *g)
 {
 	/* cleanup */
-	EzSpriteContext_delete(g->spriteCtx);
+	sySpriteContextCleanup(&g->spriteCtx);
 	SDL_DestroyRenderer(g->SDL.renderer);
 	SDL_DestroyWindow(g->SDL.window);
 }

@@ -74,6 +74,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../dep/syrup/syOgmo.h" />
+		<Unit filename="../dep/syrup/sySprite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../dep/syrup/sySprite.h" />
 		<Unit filename="../dep/syrup/syText.c">
 			<Option compilerVar="CC" />
 		</Unit>

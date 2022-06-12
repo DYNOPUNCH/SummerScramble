@@ -23,6 +23,7 @@ struct objDebugLabel
 	/* </ogmoblock> */
 	
 	/* custom user-defined variables go here */
+	struct sySprite sprite;
 };
 /* <ogmoblock1> */
 extern const struct objDebugLabel objDebugLabelDefaults;

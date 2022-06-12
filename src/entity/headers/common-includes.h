@@ -10,6 +10,7 @@
 
 #include "../../tmp/entity-ids.h"
 #include <game.h>
+#include <sySprite.h>
 
 #endif /* ENTITY_COMMON_INCLUDES_H */
 

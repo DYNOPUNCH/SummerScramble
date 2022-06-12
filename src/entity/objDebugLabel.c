@@ -49,6 +49,31 @@ syOgmoEntityFuncDecl(Draw)
 	struct objDebugLabel *my = ogmo->values;
 	
 	DebugLabel(ogmo->x, ogmo->y, ogmo->width, ogmo->height, my->color, my->text);
+	
+	/* init (placeholder) */
+	if (!my->sprite.owner)
+	{
+		sySpriteInit(&my->sprite, my, 0);
+		sySpriteSetAnimation(&my->sprite, "Swordsman");
+	}
+	
+	/* step (placeholder) */
+	my->sprite.ms_scaled += 16.666;
+	sySpriteStep(&my->sprite);
+	
+	/* draw */
+	sySpriteDraw(
+		.sprite = &my->sprite
+		, .x = ogmo->x
+		, .y = ogmo->y
+	);
+	sySpriteDraw(
+		.sprite = &my->sprite
+		, .x = ogmo->x + ogmo->width
+		, .y = ogmo->y + ogmo->height
+		, .xscale = -1
+		, .yscale = -1
+	);
 
 	return 0;
 }
