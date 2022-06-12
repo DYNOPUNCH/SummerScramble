@@ -44,22 +44,33 @@ static void *New(const void *src)
 }
 /* </ogmonew> */
 
+syOgmoEntityFuncDecl(Init)
+{
+	struct objDebugLabel *my = ogmo->values;
+	
+	/* init */
+	sySpriteInit(&my->sprite, my, 0);
+	sySpriteSetAnimation(&my->sprite, "Swordsman");
+	
+	return 0;
+}
+
+syOgmoEntityFuncDecl(Step)
+{
+	struct objDebugLabel *my = ogmo->values;
+	
+	/* step */
+	my->sprite.ms_scaled += 16.666; // TODO placeholder
+	sySpriteStep(&my->sprite);
+	
+	return 0;
+}
+
 syOgmoEntityFuncDecl(Draw)
 {
 	struct objDebugLabel *my = ogmo->values;
 	
 	DebugLabel(ogmo->x, ogmo->y, ogmo->width, ogmo->height, my->color, my->text);
-	
-	/* init (placeholder) */
-	if (!my->sprite.owner)
-	{
-		sySpriteInit(&my->sprite, my, 0);
-		sySpriteSetAnimation(&my->sprite, "Swordsman");
-	}
-	
-	/* step (placeholder) */
-	my->sprite.ms_scaled += 16.666;
-	sySpriteStep(&my->sprite);
 	
 	/* draw */
 	sySpriteDraw(
@@ -82,10 +93,14 @@ syOgmoEntityFuncDecl(Draw)
 const struct syOgmoEntityClass objDebugLabelClass = {
 	.New = New
 	, .funcs = (syOgmoEntityFunc[]){
-		[syOgmoExec_Draw] = Draw
+		[syOgmoExec_Init] = Init
+		, [syOgmoExec_Step] = Step
+		, [syOgmoExec_Draw] = Draw
 	}
 	, .funcsCount = sizeof((char[]){
-		[syOgmoExec_Draw] = 0
+		[syOgmoExec_Init] = 0
+		, [syOgmoExec_Step] = 0
+		, [syOgmoExec_Draw] = 0
 	}) / sizeof(char)
 };
 /* </ogmoclass> */

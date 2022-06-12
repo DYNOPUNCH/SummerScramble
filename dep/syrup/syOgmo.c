@@ -359,6 +359,9 @@ void syOgmoRoomCloneInto(struct syOgmoRoom *dst, const struct syOgmoRoom *src, b
 	
 	dst->layers = CloneLayers(dst->layers, dst->layersCount, readonlyToo);
 	dst->ownsRodata = readonlyToo;
+	
+	// TODO merge syOgmoRoom and syRoom types
+	syRoomExec((void*)dst, syOgmoExec_Init);
 }
 
 void syRoomContextSetGame(struct Game *game)

@@ -838,6 +838,9 @@ bool GameStep(struct Game *g)
 	 * actually step forward
 	 */
 	
+	if (g->room)
+		syRoomExec(g->room, syOgmoExec_Step);
+	
 	if (g->queuedRoomName)
 	{
 		if (g->room)
