@@ -172,6 +172,7 @@ void sySpriteClearCallbacks(struct sySprite *sprite)
 	sprite->onLoop = 0;
 	sprite->onFinish = 0;
 	sprite->onInterval = 0;
+	sprite->onFrameAdvance = 0;
 }
 
 void sySpriteSetAnimation(struct sySprite *sprite, const char *name)
@@ -234,9 +235,13 @@ void sySpriteStep(struct sySprite *sprite)
 	const struct EzSpriteFrame *frame;
 	unsigned long elapsed = 0;
 	unsigned long now;
+	unsigned short frame_index_old;
 	bool has_looped = false;
 	
 	assert(sprite);
+	
+	frame_index_old = sprite->frame_index;
+	
 	assert(g);
 	
 	anim = sprite->anim;
@@ -269,6 +274,9 @@ void sySpriteStep(struct sySprite *sprite)
 	}
 	
 	sprite->frame_index = frame - anim->frame;
+	
+	if (sprite->frame_index != frame_index_old && sprite->onFrameAdvance)
+		sprite->onFrameAdvance(sprite);
 	
 	if (has_looped)
 	{

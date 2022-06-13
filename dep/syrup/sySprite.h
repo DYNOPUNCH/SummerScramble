@@ -95,6 +95,7 @@ struct sySprite
 	sySpriteCallback *onLoop; /* misc callbacks */
 	sySpriteCallback *onFinish;
 	sySpriteCallback *onInterval;
+	sySpriteCallback *onFrameAdvance;
 	double ms_scaled; /* milliseconds animation has advanced (XXX scaled by speed, varying) */
 	float speed; /* animation playback speed (1 = default) */
 	unsigned short max_times; /* number of times to play (loop) the animation (0 = infinity) */
