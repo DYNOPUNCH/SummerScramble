@@ -96,9 +96,13 @@
 		<Unit filename="../src/dialogue.h" />
 		<Unit filename="../src/entity/debug_draw.h" />
 		<Unit filename="../src/entity/headers/common-includes.h" />
+		<Unit filename="../src/entity/headers/objAnimationTest.h" />
 		<Unit filename="../src/entity/headers/objDebugLabel.h" />
 		<Unit filename="../src/entity/headers/objExample.h" />
 		<Unit filename="../src/entity/headers/objGoToRoom.h" />
+		<Unit filename="../src/entity/objAnimationTest.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../src/entity/objDebugLabel.c">
 			<Option compilerVar="CC" />
 		</Unit>

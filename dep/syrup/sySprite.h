@@ -101,6 +101,7 @@ struct sySprite
 	unsigned short max_times; /* number of times to play (loop) the animation (0 = infinity) */
 	unsigned short looped_times; /* number of times animation has looped (internal use) */
 	unsigned short frame_index; /* frame index within animation (you can hijack this) */
+	bool has_init;
 };
 
 struct sySpriteDrawParams

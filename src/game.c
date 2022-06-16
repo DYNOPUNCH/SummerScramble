@@ -13,6 +13,8 @@
 
 //#define USE_VFS
 
+static int noVsync = 30;
+
 #include <syOgmo.h>
 #include <syFile.h>
 #include <sySprite.h>
@@ -41,6 +43,8 @@ const struct syOgmoEntityClass *entityClassDatabase[] =
 {
 	#include "tmp/entity-classes.h"
 };
+
+double gHz = 0;
 
 /*
  *
@@ -709,6 +713,9 @@ bool GameStep(struct Game *g)
 	 * handle events
 	 */
 	SDL_Event event;
+	uint64_t TESTFPS_start = 0;
+	if (noVsync)
+		TESTFPS_start = SDL_GetPerformanceCounter();
 	
 	while (SDL_PollEvent(&event))
 	{
@@ -834,19 +841,94 @@ bool GameStep(struct Game *g)
 		}
 	}
 	
+	{
+		SDL_DisplayMode dm;
+		static int last = -1;
+		int cur = SDL_GetWindowDisplayIndex(g->SDL.window);
+		
+		/* someone could change refresh rate while
+		 * the game is running
+		 */
+		if (true || cur != last)
+		{
+			SDL_GetCurrentDisplayMode(cur, &dm);
+			
+			gHz = dm.refresh_rate;
+			if (noVsync)
+				gHz = noVsync;
+			
+			cur = last;
+		}
+	}
+	
 	/*
 	 * actually step forward
 	 */
 	
-	if (g->room)
-		syRoomExec(g->room, syOgmoExec_Step);
-	
-	if (g->queuedRoomName)
+	g->spriteCtx.delta_milliseconds = 1000 / gHz;
+	double deltaTime = 0;
+	for (double cur = 1.0 / gHz
+		; cur > 0
+		; cur -= deltaTime
+	)
 	{
+		/* TODO move elsewhere so it doesn't have to be static */
+		static double updateTimer = 0;
+		
+		/* precisions less accurate than 60 Hz
+		 * are processed in 60 Hz intervals
+		 */
+		deltaTime = fmin(1.0 / 60.0, cur);
+		if (deltaTime < 0.000001)
+			break;
+		
+		/* TODO UnlockedStep */
+		#if 0
+		{
+			/* you could optimize these to constant values for
+			 * consoles where framerates are guaranteed to be 60
+			 * e.g. to lock to 60fps DT = 1, Hz = 1, Hz_2 = 1
+			 */
+			#define DT ctx->deltaTime
+			#define HZ (60)//ctx->Hz
+			#define HZ_2 (HZ * HZ)//(ctx->Hz * ctx->Hz)
+			/* these framerate-independent physics could go in Step */
+			/* update position */
+			this_x += xspeed * HZ * DT;
+			this_y += yspeed * HZ * DT;
+			yspeed += grav * HZ * DT;
+		}
+		#endif
+		
+		/* framerate-dependent logic goes in LockedStep */
+		/* run update function at 60fps */
+		updateTimer += deltaTime;//DT;
+		if (updateTimer < 1.0 / 60.0)
+			continue;
+		while (updateTimer >= 1.0 / 60.0)
+			updateTimer -= 1.0 / 60.0;
+		
 		if (g->room)
-			syRoomDelete(g->room);
-		g->room = syRoomNewFromFilename(g->queuedRoomName);
-		g->queuedRoomName = 0;
+			syRoomExec(g->room, syOgmoExec_Step);
+		
+		if (g->queuedRoomName)
+		{
+			if (g->room)
+				syRoomDelete(g->room);
+			g->room = syRoomNewFromFilename(g->queuedRoomName);
+			g->queuedRoomName = 0;
+		}
+		
+		g->spriteCtx.delta_milliseconds = 0;
+	}
+	
+	if (noVsync)
+	{
+		uint64_t TESTFPS_end = SDL_GetPerformanceCounter();
+		double TESTFPS_elapsed = (TESTFPS_end - TESTFPS_start) / (double)SDL_GetPerformanceFrequency() * 1000.0f;
+		double TESTFPS_ok = 1000.0 / noVsync;
+		if (TESTFPS_ok > TESTFPS_elapsed)
+			SDL_Delay(floor(TESTFPS_ok - TESTFPS_elapsed));
 	}
 	
 	return false;
@@ -882,11 +964,18 @@ void GameInit(struct Game *g)
 		, WIN_H
 		, SDL_WINDOW_SHOWN
 	);
-	g->SDL.renderer = SDL_CreateRenderer(
-		g->SDL.window
-		, -1
-		, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-	);
+	{
+		SDL_RendererFlags flags = SDL_RENDERER_ACCELERATED;
+		
+		if (!noVsync)
+			flags |= SDL_RENDERER_PRESENTVSYNC;
+		
+		g->SDL.renderer = SDL_CreateRenderer(
+			g->SDL.window
+			, -1
+			, flags
+		);
+	}
 	SDL_SetRenderDrawBlendMode(g->SDL.renderer, SDL_BLENDMODE_BLEND);
 	g->spriteCtx = (struct sySpriteContext){
 		.udata = g

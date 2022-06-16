@@ -73,6 +73,18 @@
           "flippedX": false,
           "flippedY": false,
           "values": {"myBoolean": false, "myColor": "#000000ff", "myEnum": "c 1", "myFilepath": "lvl:apartment/crime-scene.json", "myFloat": 0, "myInteger": 0, "myString": "", "myText": "a\nb\nc"}
+        },
+        {
+          "name": "AnimationTest",
+          "id": 6,
+          "_eid": "41835963",
+          "x": 16,
+          "y": 32,
+          "width": 16,
+          "height": 16,
+          "originX": 0,
+          "originY": 0,
+          "values": {"new_value": false}
         }
       ]
     },

@@ -60,7 +60,6 @@ syOgmoEntityFuncDecl(Step)
 	struct objDebugLabel *my = ogmo->values;
 	
 	/* step */
-	my->sprite.ms_scaled += 16.666; // TODO placeholder
 	sySpriteStep(&my->sprite);
 	
 	return 0;

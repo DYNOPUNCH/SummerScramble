@@ -138,11 +138,13 @@ void sySpriteContextUse(struct sySpriteContext *ctx)
 void sySpriteInit(struct sySprite *sprite, void *owner, void *udata)
 {
 	assert(sprite);
+	assert(sprite->has_init == false && "sySpriteInit multiple times?");
 	
 	/* populate defaults */
 	memset(sprite, 0, sizeof(*sprite));
 	sprite->owner = owner;
 	sprite->udata = udata;
+	sprite->has_init = true;
 }
 
 struct sySprite *sySpriteNewPointer(void *owner, void *udata)
@@ -168,6 +170,7 @@ struct sySprite sySpriteNewValue(void *owner, void *udata)
 void sySpriteClearCallbacks(struct sySprite *sprite)
 {
 	assert(sprite);
+	assert(sprite->has_init);
 	
 	sprite->onLoop = 0;
 	sprite->onFinish = 0;
@@ -181,6 +184,8 @@ void sySpriteSetAnimation(struct sySprite *sprite, const char *name)
 	const struct EzSpriteAnimation *animation;
 	
 	assert(sprite);
+	assert(sprite->has_init);
+	
 	assert(name);
 	assert(g);
 	
@@ -195,6 +200,7 @@ void sySpriteSetAnimation(struct sySprite *sprite, const char *name)
 		.owner = sprite->owner
 		, .udata = sprite->udata
 		, .speed = 1
+		, .has_init = true
 	};
 	
 	for (animation = bank->animation
@@ -239,6 +245,7 @@ void sySpriteStep(struct sySprite *sprite)
 	bool has_looped = false;
 	
 	assert(sprite);
+	assert(sprite->has_init);
 	
 	frame_index_old = sprite->frame_index;
 	
@@ -303,6 +310,7 @@ void sySpriteDrawExt(const struct sySprite *sprite, float x, float y, float xsca
 	bool mirror_y = false;
 	
 	assert(sprite);
+	assert(sprite->has_init);
 	assert(g);
 	
 	sheetData = g->EzSpriteSheetData.sheetData;
