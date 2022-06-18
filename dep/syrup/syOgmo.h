@@ -36,6 +36,7 @@ int syOgmoLayerCount(const struct syOgmoLayer *array);
 int syOgmoDecalCount(const struct syOgmoDecal *array);
 int syOgmoEntityCount(const struct syOgmoEntity *array);
 struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type);
+int syOgmoEntityInheritEvent(struct syOgmoEntity *entity);
 
 /* public functions */
 
@@ -101,7 +102,6 @@ struct syOgmoEntity
 	struct syOgmoEntity *parent; /* extra */
 	const syOgmoEntityClass valuesClass; /* extra */
 	const syOgmoEntityClass parentClass; /* extra */
-	syOgmoExecRetval parentReturned; /* extra */
 	const int id;
 	const float x;
 	const float y;

@@ -65,6 +65,7 @@ static struct
 	int (*image_get_height)(struct Game *game, void *img);
 	const struct syOgmoEntityClass **entityClassDb;
 	int entityClassDbLen;
+	syOgmoExec funcKeyPrev;
 } g = {
 	.error = myError
 };
@@ -201,25 +202,20 @@ static syOgmoExecRetval ExecEntity(struct syOgmoEntity *entity, syOgmoExec funcK
 	syOgmoEntityFunc exec = 0;
 	
 	assert(entity);
-	
-	if (entity->parent)
-		entity->parentReturned = ExecEntity(entity->parent, funcKey);
-	
-	/* TODO here would be a good place to consider a switch/case on parentReturned */
+	g.funcKeyPrev = funcKey;
 	
 	class = GetClass(entity->valuesClass);
 	funcs = class->funcs;
 	
 	assert(funcs);
 	
-	if (funcKey >= class->funcsCount)
-		return 0;
+	/* no function indicated for this event, so inherit from parent (if applicable) */
+	if (funcKey >= class->funcsCount
+		|| !(exec = funcs[funcKey])
+	)
+		return syOgmoEntityInheritEvent(entity);
 	
-	exec = funcs[funcKey];
-	if (exec)
-		return exec(g.game, entity);
-	
-	return 0;
+	return exec(g.game, entity);
 }
 
 static void ExecEntityArray(struct syOgmoEntity *array, int count, syOgmoExec funcKey)
@@ -492,6 +488,17 @@ struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type)
 	ExecEntity(entity, syOgmoExec_Init);
 	
 	return entity;
+}
+
+int syOgmoEntityInheritEvent(struct syOgmoEntity *entity)
+{
+	if (!entity)
+		return 0;
+	
+	if (entity->parent)
+		return ExecEntity(entity->parent, g.funcKeyPrev);
+	
+	return 0;
 }
 
 void syRoomExec(struct syRoom *r, syOgmoExec funcKey)
