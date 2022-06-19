@@ -69,14 +69,17 @@ static void BlinkOnLoop(struct sySprite *caller)
 
 static void SetupFrames(struct objNpc *my, const char *StateStr)
 {
+	const char *stateLUT[] =
+	{
+		[objNpcState_Main] = "Main"
+		, [objNpcState_COUNT] = 0
+	};
+	
 	GetName(my);
 	
-	if (!StateStr)
-		switch (my->State)
-		{
-			case objNpcState_Main: StateStr = "Main"; break;
-			default: StateStr = ""; break;
-		}
+	/* default to 'Main' if given state doesn't exist */
+	if (!StateStr && !(StateStr = stateLUT[my->State]))
+		StateStr = "Main";
 	
 #define S(FEATURE) sySpriteSetAnimationString(&my->sprite##FEATURE, Fmt("Npc/%s/%s/%s", my->Name, #FEATURE, StateStr))
 	S(Body);
