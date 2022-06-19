@@ -260,7 +260,9 @@
           "display": 0,
           "choices": ["Main"],
           "defaults": 0
-        }
+        },
+        {"name": "OnInit", "definition": "Text", "display": 0, "defaults": ""},
+        {"name": "OnClick", "definition": "Text", "display": 0, "defaults": ""}
       ]
     }
   ],

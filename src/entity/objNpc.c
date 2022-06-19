@@ -13,6 +13,8 @@ const struct objNpc objNpcDefaults =
 	/* <ogmoblock> */
 	.Which = 0
 	, .State = 0
+	, .OnInit = ""
+	, .OnClick = ""
 	, .unused___ = 0
 	/* </ogmoblock> */
 	

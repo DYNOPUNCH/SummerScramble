@@ -29,6 +29,8 @@ struct objNpc
 	/* <ogmoblock> */
 	enum objNpcWhich Which;
 	enum objNpcState State;
+	const char *OnInit;
+	const char *OnClick;
 	bool unused___;
 	/* </ogmoblock> */
 	
@@ -43,7 +45,7 @@ struct objNpc
 /* <ogmoblock1> */
 extern const struct objNpc objNpcDefaults;
 extern const struct syOgmoEntityClass objNpcClass;
-#define objNpcValues(...) (struct objNpc){.Which = 0, .State = 0, .unused___ = 0,  __VA_ARGS__ }
+#define objNpcValues(...) (struct objNpc){.Which = 0, .State = 0, .OnInit = "", .OnClick = "", .unused___ = 0,  __VA_ARGS__ }
 /* </ogmoblock1> */
 /* </ogmostruct> */
 
