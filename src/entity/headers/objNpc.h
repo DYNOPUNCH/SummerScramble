@@ -14,10 +14,12 @@
 enum objNpcWhich
 {
 	objNpcWhich_Test
+	, objNpcWhich_COUNT
 };
 enum objNpcState
 {
 	objNpcState_Main
+	, objNpcState_COUNT
 };
 /* </ogmoenums> */
 

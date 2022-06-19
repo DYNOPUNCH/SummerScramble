@@ -1972,6 +1972,7 @@ static void writeHeaders(const char *outdir, struct OgmoProject *ogmo)
 						strcatf(heap, "%s%s%s_%s\n", gTabStyle, prefix, buf, choices[i]);
 						prefix = ", ";
 					}
+					strcatf(heap, "%s%s%s_%s\n", gTabStyle, prefix, buf, "COUNT");
 					strcatf(heap, "};\n");
 				}
 				

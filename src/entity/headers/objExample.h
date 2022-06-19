@@ -17,6 +17,7 @@ enum objExamplemyEnum
 	, objExamplemyEnum_b
 	, objExamplemyEnum_c
 	, objExamplemyEnum_c1
+	, objExamplemyEnum_COUNT
 };
 /* </ogmoenums> */
 

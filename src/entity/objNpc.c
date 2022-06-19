@@ -26,15 +26,17 @@ const struct objNpc objNpcDefaults =
 static char *GetName(struct objNpc *my)
 {
 	const char *tmp = "";
+	const char *nameLUT[] =
+	{
+		[objNpcWhich_Test] = "Test"
+		, [objNpcWhich_COUNT] = 0
+	};
 	
 	if (my->Name[0])
 		return my->Name;
 	
-	switch (my->Which)
-	{
-		case objNpcWhich_Test: tmp = "Test"; break;
-		default: tmp = "Unknown"; break;
-	}
+	if (!(tmp = nameLUT[my->Which]))
+		tmp = "Unset";
 	
 	strncpy(my->Name, tmp, sizeof(my->Name));
 	
