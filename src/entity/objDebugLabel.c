@@ -50,7 +50,7 @@ syOgmoEntityFuncDecl(Init)
 	
 	/* init */
 	sySpriteInit(&my->sprite, my, 0);
-	sySpriteSetAnimation(&my->sprite, "Swordsman");
+	sySpriteSetAnimationString(&my->sprite, "Swordsman");
 	
 	return 0;
 }

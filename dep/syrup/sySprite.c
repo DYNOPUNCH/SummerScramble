@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <sySprite.h>
 
@@ -178,7 +179,7 @@ void sySpriteClearCallbacks(struct sySprite *sprite)
 	sprite->onFrameAdvance = 0;
 }
 
-void sySpriteSetAnimation(struct sySprite *sprite, const char *name)
+void sySpriteSetAnimationString(struct sySprite *sprite, const char *name)
 {
 	const struct EzSpriteBank *bank;
 	const struct EzSpriteAnimation *animation;
@@ -210,6 +211,10 @@ void sySpriteSetAnimation(struct sySprite *sprite, const char *name)
 		if (!strcmp(animation->name, name))
 			break;
 	
+#ifndef NDEBUG
+	if (animation >= bank->animation + bank->animations)
+		fprintf(stderr, "animation '%s' not found\n", name);
+#endif
 	assert(animation < bank->animation + bank->animations
 		&& "animation not found"
 	);
@@ -217,7 +222,7 @@ void sySpriteSetAnimation(struct sySprite *sprite, const char *name)
 	sprite->anim = animation;
 }
 
-void sySpriteSetAnimationSeamless(struct sySprite *sprite, const char *name)
+void sySpriteSetAnimationSeamlessString(struct sySprite *sprite, const char *name)
 {
 	struct sySprite spriteOld;
 	
@@ -228,7 +233,7 @@ void sySpriteSetAnimationSeamless(struct sySprite *sprite, const char *name)
 	spriteOld = *sprite;
 	
 	/* load new animation */
-	sySpriteSetAnimation(sprite, name);
+	sySpriteSetAnimationString(sprite, name);
 	
 	/* restore state */
 	spriteOld.anim = sprite->anim;

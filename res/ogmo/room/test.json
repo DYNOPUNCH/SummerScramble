@@ -85,6 +85,18 @@
           "originX": 0,
           "originY": 0,
           "values": {"new_value": false}
+        },
+        {
+          "name": "Npc",
+          "id": 7,
+          "_eid": "58648975",
+          "x": 264,
+          "y": 248,
+          "width": 16,
+          "height": 16,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Which": "Test", "State": "Main"}
         }
       ]
     },

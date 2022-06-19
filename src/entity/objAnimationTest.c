@@ -55,9 +55,9 @@ syOgmoEntityFuncDecl(Init)
 	sySpriteInit(&my->spriteBase, my, 0);
 	sySpriteInit(&my->spriteEyes, my, 0);
 	sySpriteInit(&my->spriteMouth, my, 0);
-	sySpriteSetAnimation(&my->spriteBase, "npc-test/base");
-	sySpriteSetAnimation(&my->spriteEyes, "npc-test/stare");
-	sySpriteSetAnimation(&my->spriteMouth, "npc-test/talk");
+	sySpriteSetAnimationString(&my->spriteBase, "npc-test/base");
+	sySpriteSetAnimationString(&my->spriteEyes, "npc-test/stare");
+	sySpriteSetAnimationString(&my->spriteMouth, "npc-test/talk");
 	
 	return 0;
 }
@@ -71,7 +71,7 @@ static void blinkFinished(struct sySprite *caller)
 	debug("blinkFinished owner = %p\n", owner);
 	debug("blinkFinished caller = %p\n", caller);
 	
-	sySpriteSetAnimation(&owner->spriteEyes, "npc-test/stare");
+	sySpriteSetAnimationString(&owner->spriteEyes, "npc-test/stare");
 	
 	// or you can just do this
 	//sySpriteSetAnimation(caller, "npc-test/stare");
@@ -89,7 +89,7 @@ syOgmoEntityFuncDecl(Step)
 	if (SDL_GetTicks() - my->blinkStart > 2000)
 	{
 		my->blinkStart = SDL_GetTicks();
-		sySpriteSetAnimation(&my->spriteEyes, "npc-test/blink");
+		sySpriteSetAnimationString(&my->spriteEyes, "npc-test/blink");
 		my->spriteEyes.onFinish = blinkFinished;
 		my->spriteEyes.max_times = 1;
 	}
