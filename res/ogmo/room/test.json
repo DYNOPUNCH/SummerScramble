@@ -96,7 +96,7 @@
           "height": 16,
           "originX": 0,
           "originY": 0,
-          "values": {"Which": "Test", "State": "Main", "OnInit": "", "OnClick": ""}
+          "values": {"Which": "Test", "State": "Main", "OnInit": "debug(\"OnInit\\n\");\ndebug(\"Hello world!\\n\");", "OnClick": "debug(\"OnClick\\n\");"}
         }
       ]
     },

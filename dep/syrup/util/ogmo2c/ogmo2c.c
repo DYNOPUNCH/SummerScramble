@@ -6,7 +6,8 @@
  * you need libcjson-dev in order to build this
  * 
  */
- 
+
+#define _XOPEN_SOURCE 500
 #include <cjson/cJSON.h>
 #include <sys/stat.h>
 #include <assert.h>
@@ -18,6 +19,7 @@
 #include <math.h>
 #include <ftw.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #define DIE(...) { fprintf(stderr, __VA_ARGS__); return -1; }
 #define ERRPREFIX " -> "
@@ -45,6 +47,8 @@
 const char *gEntityNamePrefix = "En_";
 const char *gTabStyle = " ";
 FILE *gOut;
+char *gHooksProto = 0;
+char *gHooksDir = 0;
 
 /* TODO organization, cleanup, and safety */
 
@@ -327,7 +331,9 @@ struct OgmoEntityValueDef
 	char *definition_c; /* extra */
 	int display;
 	char *defaultsAsString; /* extra */
+	char *defaultFunctionBody; /* extra */
 	bool hasOverride; /* extra */
+	bool isFunction; /* extra */
 	union
 	{
 		struct
@@ -404,6 +410,8 @@ struct OgmoEntityDef
 	struct OgmoEntityValueDef *values;
 	int valuesCount; /* extra */
 	char *valuesProgrammer; /* extra */
+	int uniqueFuncCounter; /* extra */
+	bool hookExists; /* extra */
 	const char *texture;
 };
 
@@ -722,6 +730,12 @@ static char *sanitizeNewlines(const char *str)
 			++dst;
 			*dst = '"';
 		}
+		else if (*src == '"')
+		{
+			*dst = '\\';
+			++dst;
+			*dst = '"';
+		}
 		else
 			*dst = *src;
 	}
@@ -791,7 +805,56 @@ static void PrintJSON(cJSON *json)
 							v = OgmoEntityDefFindValue(enDef, walk->string);
 							if (v)
 							{
-								if (!strcasecmp(v->definition, "color"))
+								if (v->isFunction)
+								{
+									char buf[4096];
+									const char *functionBody;
+									
+								L_writeFunction:
+									snprintf(
+										buf
+										, sizeof(buf)
+										, "__%s%s%s%d"
+										, gEntityNamePrefix
+										, nameLast
+										, "UniqueFunc"
+										, enDef->uniqueFuncCounter++
+									);
+									
+									if (enDef->uniqueFuncCounter == 1)
+										functionBody = v->defaultFunctionBody;
+									else
+										functionBody = walk->valuestring;
+									
+									/* pipe this into tmp/entity-hooks/objNpcHooks.h etc */
+									{
+										char fn[2048];
+										FILE *fp;
+										
+										sprintf(fn, "%s/%s%sHooks.h", gHooksDir, gEntityNamePrefix, nameLast);
+										fp = fopen(fn, enDef->hookExists ? "a" : "w");
+										enDef->hookExists = true;
+										fprintf(fp, "syOgmoEntityFuncPublic(%s)\n{\n%s\n}\n\n", buf, functionBody);
+										fclose(fp);
+									}
+									
+									/* pipe this into tmp/entity-hooks.h */
+									{
+										static const char *mode = "w";
+										FILE *fp = fopen(gHooksProto, mode);
+										mode = "a";
+										fprintf(fp, "extern syOgmoEntityFuncPublic(%s);\n", buf);
+										fclose(fp);
+									}
+									
+									/* first function contains defaults, so do again */
+									if (enDef->uniqueFuncCounter == 1)
+										goto L_writeFunction;
+									
+									strcat(buf, SIG_NO_QUOTES);
+									walk->valuestring = myStrdup(buf);
+								}
+								else if (!strcasecmp(v->definition, "color"))
 								{
 									char buf[1024];
 									
@@ -935,6 +998,31 @@ static int ftw_callback(const char *fpath, const struct stat *sb, int typeflag)
 	return 0;
 }
 
+/*static int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
+{
+	int rv = remove(fpath);
+
+	if (rv)
+	{
+		perror(fpath);
+		exit(EXIT_FAILURE);
+	}
+
+	return rv;
+	
+	(void)sb;
+	(void)typeflag;
+	(void)ftwbuf;
+}
+
+static int rmrf(const char *path)
+{
+	if (!isDirectory(path))
+		return 0;
+	
+	return nftw(path, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
+}*/
+
 static void stringArrayAppend(char ***list, int *count, char *v)
 {
 	*list = realloc(*list, (*count + 1) * sizeof(*list));
@@ -965,7 +1053,7 @@ static int handleDirectory(const char *path)
 
 static char *getJsonString(cJSON *v)
 {
-	char *r = sanitizeNewlines(v->valuestring);
+	char *r = myStrdup(v->valuestring);
 	
 	assert(r);
 	
@@ -1059,10 +1147,12 @@ static struct Vec2i getJsonVec2i(cJSON *v)
 	return r;
 }
 
-static struct OgmoEntityValueDef *getEntityValueArray(cJSON *v, int *count)
+static struct OgmoEntityValueDef *getEntityValueArray(cJSON *v, int *count, const char *nameLast)
 {
 	struct OgmoEntityValueDef *r = 0;
 	cJSON *walk;
+	
+	assert(nameLast);
 	
 	if (!v)
 		return 0;
@@ -1088,7 +1178,17 @@ static struct OgmoEntityValueDef *getEntityValueArray(cJSON *v, int *count)
 					
 					assert(my.definition);
 					
-					if (!strcasecmp(my.definition, "color"))
+					if (now->valuestring
+						&& strlen(now->valuestring) >= strlen("/*syOgmoHook*/")
+						&& !memcmp(now->valuestring, "/*syOgmoHook*/", strlen("/*syOgmoHook*/"))
+					)
+					{
+						//fprintf(stderr, "void func(void){ %s }\n", now->valuestring);
+						my.defaultFunctionBody = myStrdup(now->valuestring);
+						my.isFunction = true;
+						continue;
+					}
+					else if (!strcasecmp(my.definition, "color"))
 						snprintf(buf, sizeof(buf), "0x%s", now->valuestring + 1);
 					else
 						snprintf(buf, sizeof(buf), "\"%s\"", sanitizeNewlines(now->valuestring));
@@ -1156,7 +1256,28 @@ static struct OgmoEntityValueDef *getEntityValueArray(cJSON *v, int *count)
 			SWITCH_STR_CASE("String")
 				my->definition_c = "const char *";
 			SWITCH_STR_CASE("Text")
-				my->definition_c = "const char *";
+			{
+				if (my->isFunction)
+				{
+					char buf[4096];
+					snprintf(
+						buf
+						, sizeof(buf)
+						, "__%s%s%s%d"
+						, gEntityNamePrefix
+						, nameLast
+						, "UniqueFunc"
+						, 0
+					);
+					//my->functionBody = my->defaultsAsString;
+					//my->functionBody = my->u.Text.defaults;
+					my->defaultsAsString = myStrdup(buf);
+					my->definition_c = "syOgmoEntityFunc ";
+					my->isFunction = true;
+				}
+				else
+					my->definition_c = "const char *";
+			}
 			SWITCH_STR_UNKNOWN
 				my->definition_c = "unknown ";
 		SWITCH_STR_END
@@ -1230,7 +1351,7 @@ static struct OgmoEntityDef *getEntityArray(cJSON *v, int *count)
 			CASE("tags")
 				my.tags = getJsonStringArray(now);
 			CASE("values")
-				my.values = getEntityValueArray(now, &my.valuesCount);
+				my.values = getEntityValueArray(now, &my.valuesCount, my.name);
 			CASE("texture")
 				my.texture = getJsonString(now);
 			CASE("textureImage")
@@ -2027,6 +2148,40 @@ static void writeHeaders(const char *outdir, struct OgmoProject *ogmo)
 	}
 }
 
+/* deletes directory containing hooks, as well as the .h containing hook prototypes */
+/* XXX actually, deletion isn't necessary; the code is left commented out anyway */
+static void deleteHooks(const char *hooks, struct OgmoProject *ogmo)
+{
+	char buf[4096];
+	char *p;
+	
+	assert(hooks);
+	
+	//rmrf(hooks);
+#if defined(_WIN32)
+extern int _mkdir(const char *);
+	mkdir(hooks);
+#else
+	mkdir(hooks, 0777);
+#endif
+	
+	strcpy(buf, hooks);
+	
+	p = buf + strlen(buf) - 1;
+	if (*p == '\\' || *p == '/')
+		*p = '\0';
+	
+	strcat(buf, ".h");
+	
+	//remove(buf);
+	
+	// TODO move into ogmo
+	gHooksProto = myStrdup(buf);
+	gHooksDir = myStrdup(hooks);
+	
+	(void)ogmo;
+}
+
 int main(int argc, char *argv[])
 {
 	struct OgmoProject *ogmo;
@@ -2038,13 +2193,14 @@ int main(int argc, char *argv[])
 	const char *all = argv[6];
 	const char *enums = argv[7];
 	const char *classes = argv[8];
-	const char *rooms = argv[9];
+	const char *hooks = argv[9];
+	const char *rooms = argv[10];
 	
 	gOut = stdout;
 	
-	if (argc != 10)
+	if (argc != 11)
 	{
-		fprintf(stderr, "args: ogmo2c in tab prefix src include all enums classes rooms\n");
+		fprintf(stderr, "args: ogmo2c in tab prefix src include all enums classes hooks rooms\n");
 		fprintf(stderr, " - in:       the path to the .ogmo file,\n");
 		fprintf(stderr, " - tab:      tab style \"\\t\" or \"   \" etc\n");
 		fprintf(stderr, " - prefix:   prefix to prepend to entity struct/class names\n");
@@ -2053,6 +2209,9 @@ int main(int argc, char *argv[])
 		fprintf(stderr, " - all:      file in which to write an #include for each entity\n");
 		fprintf(stderr, " - enums:    file in which entity enums reside\n");
 		fprintf(stderr, " - classes:  file in which entity class pointers reside\n");
+		fprintf(stderr, " - hooks:    directory in which to write entity hooks\n");
+		fprintf(stderr, "             [!] is deleted and recreated each time\n");
+		fprintf(stderr, "             [!] also creates hooks.h\n");
 		fprintf(stderr, " - rooms:    file in which room database reside\n");
 		
 		return -1;
@@ -2069,6 +2228,8 @@ int main(int argc, char *argv[])
 		return -1;
 	
 	stringArrayPrint(ogmo->levelPaths);
+	
+	deleteHooks(hooks, ogmo);
 	
 	/* XXX order matters; in particular, writeSources() should precede
 	 * everything else because defaults for programmer-defined variables

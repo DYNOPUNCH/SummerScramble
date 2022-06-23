@@ -1,8 +1,8 @@
 set -e
 mkdir -p bin
 mkdir -p src/tmp
-bin/util/syrup/ogmo2c res/ogmo/ogmo.ogmo "\t" "obj" src/entity src/entity/headers src/tmp/entity-all.h src/tmp/entity-ids.h src/tmp/entity-classes.h src/tmp/rooms.h
-gcc -o bin/SummerScramble -Idep dep/*.c -Idep/syrup dep/syrup/*.c -Isrc src/*.c src/entity/*.c -Isrc/entity/headers -lSDL2 -lm -pedantic -std=c99
+bin/util/syrup/ogmo2c res/ogmo/ogmo.ogmo "\t" "obj" src/entity src/entity/headers src/tmp/entity-all.h src/tmp/entity-ids.h src/tmp/entity-classes.h src/tmp/entity-hooks src/tmp/rooms.h
+gcc -o bin/SummerScramble -Idep dep/*.c -Idep/syrup dep/syrup/*.c -Isrc src/*.c src/entity/*.c -Isrc/entity/headers -Isrc/tmp/entity-hooks -lSDL2 -lm -pedantic -std=c99
 
 # testing other compilers/settings; please ignore this
 #tcc -o bin/SummerScramble -Idep dep/*.c -D_INC_VADEFS -IC:\\msys64\\mingw64\\include -Idep/syrup dep/syrup/*.c -Isrc src/*.c src/entity/*.c -lSDL2 -lm

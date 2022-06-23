@@ -20,7 +20,9 @@ typedef int syOgmoEntityClass;
 typedef int syOgmoExec;
 typedef int syOgmoExecRetval;
 typedef syOgmoExecRetval (*syOgmoEntityFunc)(struct Game *game, struct syOgmoEntity *entity);
+#define syOgmoEntityFuncShareArgs game, ogmo
 #define syOgmoEntityFuncDecl(FUNCNAME) static syOgmoExecRetval FUNCNAME(struct Game *game, struct syOgmoEntity *ogmo)
+#define syOgmoEntityFuncPublic(FUNCNAME) syOgmoExecRetval FUNCNAME(struct Game *game, struct syOgmoEntity *ogmo)
 #define syOgmoEntityFuncLast ((syOgmoEntityFunc)-1)
 
 #if 0
@@ -71,7 +73,7 @@ enum syOgmoExec
 	, syOgmoExec_Free
 	, syOgmoExec_End
 	/* values >= syOgmoExec_End should be defined in your own game-specific enum
-	 * (declared elsewhere), and follow the same naming scheme
+	 * (declared elsewhere), and follow the same naming convention
 	 */
 };
 

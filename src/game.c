@@ -35,6 +35,7 @@ static int noVsync = 30;
 /* room database */
 #include "tmp/entity-ids.h"
 #include "tmp/entity-all.h"
+#include "tmp/entity-hooks.h"
 static struct syOgmoRoom roomDatabase[] =
 {
 	#include "tmp/rooms.h"

@@ -6,6 +6,7 @@
  */
 
 #include <objNpc.h>
+#include <objNpcHooks.h>
 
 /* <ogmodefaults> */
 const struct objNpc objNpcDefaults = 
@@ -13,8 +14,8 @@ const struct objNpc objNpcDefaults =
 	/* <ogmoblock> */
 	.Which = 0
 	, .State = 0
-	, .OnInit = ""
-	, .OnClick = ""
+	, .OnInit = __objNpcUniqueFunc0
+	, .OnClick = __objNpcUniqueFunc0
 	, .unused___ = 0
 	/* </ogmoblock> */
 	
@@ -116,6 +117,9 @@ static void *New(const void *src)
 syOgmoEntityFuncDecl(Init)
 {
 	struct objNpc *my = ogmo->values;
+	
+	if (my->OnInit)
+		my->OnInit(syOgmoEntityFuncShareArgs);
 	
 	/* init */
 	sySpriteInit(&my->spriteBody, my, 0);
