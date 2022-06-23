@@ -26,6 +26,7 @@
 					<Add directory="../dep/syrup" />
 					<Add directory="../src" />
 					<Add directory="../src/entity/headers" />
+					<Add directory="../src/tmp/entity-hooks" />
 				</Compiler>
 				<Linker>
 					<Add option="-lSDL2" />
@@ -34,7 +35,7 @@
 					<Add before='cmd /c echo &quot;Pre-build steps&quot;' />
 					<Add before="util/win64/ezspritesheet-cli  -i ../res/gfx -o ../src/tmp/gfx.h -s c99 -m maxrects -a 1024x1024 -e -t -d -c 00ff00" />
 					<Add before="cmd /c move /Y ..\\src\\tmp\\*.png ..\\res" />
-					<Add before='util/win64/ogmo2c ../res/ogmo/ogmo.ogmo &quot;\t&quot; &quot;obj&quot; ../src/entity ../src/entity/headers ../src/tmp/entity-all.h ../src/tmp/entity-ids.h ../src/tmp/entity-classes.h ../src/tmp/rooms.h' />
+					<Add before='util/win64/ogmo2c ../res/ogmo/ogmo.ogmo &quot;\t&quot; &quot;obj&quot; ../src/entity ../src/entity/headers ../src/tmp/entity-all.h ../src/tmp/entity-ids.h ../src/tmp/entity-classes.h ../src/tmp/entity-hooks ../src/tmp/rooms.h' />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release">
