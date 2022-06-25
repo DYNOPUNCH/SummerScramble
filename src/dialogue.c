@@ -4,13 +4,14 @@
  * conversation processing
  */
 
-#include "syText.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
+
+#include "common.h"
+#include "dialogue.h"
 
 #define KEY_isEnd       "isEnd"
 #define KEY_isQuestion  "isQuestion"
@@ -18,23 +19,6 @@
 #define KEY_goto        "goto"
 #define KEY_character   "character"
 #define KEY_emotion     "emotion"
-
-struct DialogueOption
-{
-	const char *text;
-	const char *label;
-};
-
-struct Dialogue
-{
-	const struct syText *text;
-	const char *character; /* who is speaking */
-	const char *emotion; /* how they feel */
-	struct DialogueOption *option;
-	int optionNum;
-	bool isEnd;
-	bool isQuestion;
-};
 
 /* set up Dialogue based on syText contents */
 static void MakeFromSyText(struct Dialogue *dst, const struct syText *src)
@@ -99,6 +83,9 @@ void DialogueDisplay(struct Dialogue *d)
 void DialogueStart(struct Dialogue *d, const char *label)
 {
 	const struct syText *text = syTextFindByLabel(label);
+	
+	if (!text)
+		die("could not find label '%s' in table '%s'\n", label, syTextGetTable());
 	
 	MakeFromSyText(d, text);
 }

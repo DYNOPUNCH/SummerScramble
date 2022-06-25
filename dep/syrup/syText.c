@@ -290,6 +290,14 @@ void syTextSetTable(const char *name)
 	g->table = FindTable(name);
 }
 
+const char *syTextGetTable(void)
+{
+	assert(g);
+	assert(g->table);
+	
+	return g->table->name;
+}
+
 const struct syText *syTextFindByLabel(const char *label)
 {
 	struct syText *m;
@@ -608,25 +616,25 @@ void syTextCleanup(void)
 	g = 0;
 }
 
-const char *what(const char *str)
+static const char *StrSafe(const char *str)
 {
-	return str ? str : "";
+	return str ? str : "(null)";
 }
 
 const char *syTextGetLabel(const struct syText *t)
 {
 	if (!t)
-		return 0;
+		return StrSafe(0);
 	
-	return t->key.string;
+	return StrSafe(t->key.string);
 }
 
 const char *syTextGetContents(const struct syText *t)
 {
 	if (!t)
-		return 0;
+		return StrSafe(0);
 	
-	return t->contents;
+	return StrSafe(t->contents);
 }
 
 const struct syText *syTextNextInArray(const struct syText *t)
@@ -668,7 +676,7 @@ void syTextDumpLocale(const char *name, const char *outfn)
 					if (i)
 						fprintf(fp, "\n\t");
 					for (int k = 0; k < msg->udataW; ++k)
-						fprintf(fp, "\t%s", what(msg->udata[i][k]));
+						fprintf(fp, "\t%s", StrSafe(msg->udata[i][k]));
 				}
 			}
 		}

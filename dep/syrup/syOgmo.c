@@ -108,7 +108,7 @@ static struct syOgmoEntity *CloneEntityInto(struct syOgmoEntity *dst, const stru
 	if (dst->parent)
 		dst->parent = CloneEntity(dst->parent, readonlyToo);
 	else if (dst->parentClass)
-		dst->parent = syOgmoEntityNew(dst->parentClass);
+		dst->parent = syOgmoEntityNew(dst->parentClass, 0);
 	
 	return dst;
 }
@@ -467,7 +467,7 @@ void syOgmoLayerAddInstance(struct syOgmoLayer *layer, struct syOgmoEntity *enti
 	layer->spawnedEntities = entity;
 }
 
-struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type)
+struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type, const void *values)
 {
 	struct syOgmoEntity *entity = calloc(1, sizeof(*entity));
 	const struct syOgmoEntityClass *class;
@@ -479,12 +479,15 @@ struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type)
 	class = GetClass(type);
 	
 	assert(class->New);
-	entity->values = class->New(0);
+	entity->values = class->New(values);
 	
 	if (class->parentClass)
-		entity->parent = syOgmoEntityNew(entity->parentClass);
+		entity->parent = syOgmoEntityNew(entity->parentClass, 0);
 	
-	/* TODO perhaps move this into the wrapper instead */
+	/* TODO consider 'Create' event */
+	//ExecEntity(entity, syOgmoExec_Create);
+	
+	/* TODO add entity->hasInit and fire 'Init' event elsewhere */
 	ExecEntity(entity, syOgmoExec_Init);
 	
 	return entity;

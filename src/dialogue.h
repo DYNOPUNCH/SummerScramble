@@ -8,9 +8,24 @@
 #define SUMMER_DIALOGUE_H_INCLUDED
 
 #include <stdbool.h>
+#include <syText.h>
 
-/* opaque types */
-struct Dialogue;
+struct DialogueOption
+{
+	const char *text;
+	const char *label;
+};
+
+struct Dialogue
+{
+	const struct syText *text;
+	const char *character; /* who is speaking */
+	const char *emotion; /* how they feel */
+	struct DialogueOption *option;
+	int optionNum;
+	bool isEnd;
+	bool isQuestion;
+};
 
 /* public functions */
 struct Dialogue *DialogueNew(void);

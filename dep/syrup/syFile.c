@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <stdint.h>
 
 static struct
 {
@@ -71,7 +72,7 @@ const void *syFileLoadReadonly(const char *fn, size_t *sz, bool *isCopy)
 	}
 	fseek(fp, 0, SEEK_END);
 	*sz = ftell(fp);
-	data = malloc(*sz);
+	data = malloc(*sz + 1); /* zero term in case text file */
 	assert(data);
 	fseek(fp, 0, SEEK_SET);
 	if (fread(data, 1, *sz, fp) != *sz)
@@ -79,6 +80,7 @@ const void *syFileLoadReadonly(const char *fn, size_t *sz, bool *isCopy)
 		fprintf(stderr, "read error on file '%s'\n", fn);
 		return 0;
 	}
+	((uint8_t*)data)[*sz] = '\0'; /* zero term in case text file */
 	
 	*isCopy = true;
 	return data;
@@ -104,9 +106,10 @@ void *syFileLoad(const char *fn, size_t *sz)
 		return (void*)data;
 	
 	/* otherwise, return a copy that is safe to modify */
-	out = malloc(*sz);
+	out = malloc(*sz + 1); /* zero term in case text file */
 	assert(out);
 	memcpy(out, data, *sz);
+	((uint8_t*)out)[*sz] = '\0'; /* zero term in case text file */
 	
 	return out;
 }

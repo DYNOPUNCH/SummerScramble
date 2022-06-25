@@ -264,6 +264,83 @@
         {"name": "OnInit", "definition": "Text", "display": 0, "defaults": "/*syOgmoHook*/\nreturn 0;"},
         {"name": "OnClick", "definition": "Text", "display": 0, "defaults": "/*syOgmoHook*/\nreturn 0;"}
       ]
+    },
+    {
+      "exportID": "17638257",
+      "name": "ConversationTrigger",
+      "limit": -1,
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "Label", "definition": "String", "display": 0, "defaults": "unset", "maxLength": 0, "trimWhitespace": true},
+        {"name": "OnClick", "definition": "Text", "display": 0, "defaults": "/*syOgmoHook*/\nstruct objConversationTrigger *my = ogmo->values;\n\n/* here, you can conditionally override Label using my->Label = \"otherLabel\"; */\n\n/* success */\n(void)my;\nreturn 0;"}
+      ]
+    },
+    {
+      "exportID": "17712886",
+      "name": "Conversation",
+      "limit": -1,
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "Label", "definition": "String", "display": 0, "defaults": "unset", "maxLength": 0, "trimWhitespace": true}
+      ]
     }
   ],
   "tilesets": []

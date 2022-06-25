@@ -13,6 +13,7 @@
 #include "../../tmp/entity-ids.h"
 #include <game.h>
 #include <sySprite.h>
+#include <dialogue.h>
 
 #endif /* ENTITY_COMMON_INCLUDES_H */
 

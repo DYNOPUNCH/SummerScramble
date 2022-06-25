@@ -25,19 +25,17 @@ typedef syOgmoExecRetval (*syOgmoEntityFunc)(struct Game *game, struct syOgmoEnt
 #define syOgmoEntityFuncPublic(FUNCNAME) syOgmoExecRetval FUNCNAME(struct Game *game, struct syOgmoEntity *ogmo)
 #define syOgmoEntityFuncLast ((syOgmoEntityFunc)-1)
 
-#if 0
-#define syOgmoEntityNew(X, ...) X ## New( __VA_ARGS__ )
 
-#define ______OgmoEntityValuesMain(X, ...) test(X, &syOgmoEntityNew(X, __VA_ARGS__))
-#define ______OgmoEntityValuesMainWrapper(X) X
-#define syOgmoEntitySpawn(...) ______OgmoEntityValuesMainWrapper(______OgmoEntityValuesMain(__VA_ARGS__, .unused___ = 0))
-#endif
+#define ___syOgmoEntitySpawnConcat(X, ...) X ## Values( __VA_ARGS__ )
+#define ___syOgmoEntitySpawnMain(X, ...) (syOgmoEntityNew)(X, &___syOgmoEntitySpawnConcat(X, __VA_ARGS__))
+#define ___syOgmoEntitySpawnMainWrapper(X) X
+#define syOgmoEntityNewWith(...) ___syOgmoEntitySpawnMainWrapper(___syOgmoEntitySpawnMain(__VA_ARGS__, .unused___ = 0))
 
 void syOgmoRoomCloneInto(struct syOgmoRoom *dst, const struct syOgmoRoom *src, bool readonlyToo);
 int syOgmoLayerCount(const struct syOgmoLayer *array);
 int syOgmoDecalCount(const struct syOgmoDecal *array);
 int syOgmoEntityCount(const struct syOgmoEntity *array);
-struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type);
+struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type, const void *values);
 int syOgmoEntityInheritEvent(struct syOgmoEntity *entity);
 
 /* public functions */

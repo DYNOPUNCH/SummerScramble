@@ -1,0 +1,15 @@
+~	Menu				
+file	File				
+edit	Edit				
+view	View				
+~	Conversations	isEnd	isQuestion	option	goto
+hello	Hello!				
+	Fancy seeing you here!				
+	Where are you headed?		y	Town	town
+				Pond	pond
+				Field	field
+town	Have a good outing!	y			
+pond	I hear the fish are biting today!	y			
+field	Pack some bugspray if you're headed that way.	y			
+jptest	Obligatory UTF-8 test...				
+	ハローワールド	y			

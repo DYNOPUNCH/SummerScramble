@@ -18,6 +18,7 @@ static int noVsync = 30;
 #include <syOgmo.h>
 #include <syFile.h>
 #include <sySprite.h>
+#include <syText.h>
 
 #include "game.h"
 #include "common.h"
@@ -67,9 +68,10 @@ struct Mouse
 {
 	int x;
 	int y;
+	int press_x;
+	int press_y;
 	bool press;
 	bool release;
-	unsigned long releaseTicks;
 };
 
 struct Game
@@ -718,6 +720,9 @@ bool GameStep(struct Game *g)
 	if (noVsync)
 		TESTFPS_start = SDL_GetPerformanceCounter();
 	
+	if (g->mouse.release)
+		g->mouse.release = false;	
+	
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
@@ -749,12 +754,13 @@ bool GameStep(struct Game *g)
 			
 			case SDL_MOUSEBUTTONDOWN:
 				g->mouse.press = true;
+				g->mouse.press_x = g->mouse.x;
+				g->mouse.press_y = g->mouse.y;
 				break;
 			
 			case SDL_MOUSEBUTTONUP:
 				g->mouse.press = false;
 				g->mouse.release = true;
-				g->mouse.releaseTicks = ticks(g);
 				break;
 			
 			/* key press */
@@ -992,6 +998,14 @@ void GameInit(struct Game *g)
 	sySpriteContextLoad(&g->spriteCtx);
 	sySpriteContextUse(&g->spriteCtx);
 	
+	/* text system */
+	{
+		syTextInit();
+		
+		syTextAddLocale("en", "", syFileLoad("locale/en.tsv", 0));
+		syTextSetLocale("en");
+	}
+	
 	/* room system */
 	{
 		syRoomContextSetGame(g);
@@ -1082,23 +1096,39 @@ bool MouseInRect(float rx, float ry, float rw, float rh)
 	);
 }
 
+bool MousePressInRect(float rx, float ry, float rw, float rh)
+{
+	float scale = 1;//gGame->scale;
+	return (gGame->mouse.press_x >= (scale * rx)
+		&& gGame->mouse.press_y >= (scale * ry)
+		&& gGame->mouse.press_x <= (scale * (rx + rw))
+		&& gGame->mouse.press_y <= (scale * (ry + rh))
+	);
+}
+
 enum MouseState MouseStateRect(float rx, float ry, float rw, float rh)
 {
 	if (!MouseInRect(rx, ry, rw, rh))
 		return MouseState_None;
 	
-	/* timeout in milliseconds */
-	if (ticks(gGame) - gGame->mouse.releaseTicks >= 30)
-		gGame->mouse.release = false;
-	
 	if (gGame->mouse.release)
 	{
 		gGame->mouse.release = false;
+		gGame->mouse.press = false;
+		
+		if (!MousePressInRect(rx, ry, rw, rh))
+			return MouseState_None;
+		
 		return MouseState_Clicked;
 	}
 	
 	if (gGame->mouse.press)
+	{
+		if (!MousePressInRect(rx, ry, rw, rh))
+			return MouseState_None;
+		
 		return MouseState_Down;
+	}
 	
 	return MouseState_Hover;
 }

@@ -97,6 +97,18 @@
           "originX": 0,
           "originY": 0,
           "values": {"Which": "Test", "State": "Main", "OnInit": "debug(\"OnInit\\n\");\ndebug(\"Hello world!\\n\");\nreturn 0;", "OnClick": "debug(\"OnClick\\n\");\nreturn 0;"}
+        },
+        {
+          "name": "ConversationTrigger",
+          "id": 10,
+          "_eid": "17638257",
+          "x": 240,
+          "y": 16,
+          "width": 192,
+          "height": 16,
+          "originX": 0,
+          "originY": 0,
+          "values": {"Label": "unset", "OnClick": "/*syOgmoHook*/\nstruct objConversationTrigger *my = ogmo->values;\n\n/* here, you can conditionally override Label using my->Label = \"otherLabel\"; */\n//static int counter = 0;\n//my->Label = ((++counter) & 1) ? \"a\" : \"b\";\nmy->Label = \"hello\";\n\n/* success */\n(void)my;\nreturn 0;"}
         }
       ]
     },

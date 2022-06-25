@@ -96,6 +96,11 @@ static int ftw_callback(const char *fpath, const struct stat *sb, int typeflag)
 			fprintf(stdout, "%d,", c);
 			++size;
 		}
+		
+		/* append a zero terminator in case file is text */
+		fprintf(stdout, "0");
+		++size;
+		
 		fprintf(stdout, "}, %d", size);
 		fprintf(stdout, "},\n");
 	}

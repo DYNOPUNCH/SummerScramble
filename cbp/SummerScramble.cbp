@@ -98,11 +98,19 @@
 		<Unit filename="../src/entity/debug_draw.h" />
 		<Unit filename="../src/entity/headers/common-includes.h" />
 		<Unit filename="../src/entity/headers/objAnimationTest.h" />
+		<Unit filename="../src/entity/headers/objConversation.h" />
+		<Unit filename="../src/entity/headers/objConversationTrigger.h" />
 		<Unit filename="../src/entity/headers/objDebugLabel.h" />
 		<Unit filename="../src/entity/headers/objExample.h" />
 		<Unit filename="../src/entity/headers/objGoToRoom.h" />
 		<Unit filename="../src/entity/headers/objNpc.h" />
 		<Unit filename="../src/entity/objAnimationTest.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/entity/objConversation.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/entity/objConversationTrigger.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/entity/objDebugLabel.c">
