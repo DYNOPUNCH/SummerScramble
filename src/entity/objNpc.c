@@ -12,10 +12,7 @@
 const struct objNpc objNpcDefaults = 
 {
 	/* <ogmoblock> */
-	.Which = 0
-	, .State = 0
-	, .OnInit = __objNpcUniqueFunc0
-	, .OnClick = __objNpcUniqueFunc0
+	.State = 0
 	, .unused___ = 0
 	/* </ogmoblock> */
 	
@@ -26,25 +23,6 @@ const struct objNpc objNpcDefaults =
 /* </ogmodefaults> */
 
 /* private functions */
-static char *GetName(struct objNpc *my)
-{
-	const char *tmp = "";
-	const char *nameLUT[] =
-	{
-		[objNpcWhich_Test] = "Test"
-		, [objNpcWhich_COUNT] = 0
-	};
-	
-	if (my->Name[0])
-		return my->Name;
-	
-	if (!(tmp = nameLUT[my->Which]))
-		tmp = "Unset";
-	
-	strncpy(my->Name, tmp, sizeof(my->Name));
-	
-	return my->Name;
-}
 
 static const char *Fmt(const char *fmt, ...)
 {
@@ -66,8 +44,14 @@ static void BlinkOnLoop(struct sySprite *caller)
 	
 	assert(owner);
 	
-	/* TODO randomized blinking; for now, it alternates on/off each loop */
-	owner->isBlinking = !owner->isBlinking;
+	/* randomized blinking between cycles */
+	if ((--owner->blinkCountDown) <= 0)
+	{
+		owner->blinkCountDown = rand() % 3 + 3;
+		owner->isBlinking = true;
+	}
+	else
+		owner->isBlinking = false;
 }
 
 static void SetupFrames(struct objNpc *my, const char *StateStr)
@@ -77,8 +61,6 @@ static void SetupFrames(struct objNpc *my, const char *StateStr)
 		[objNpcState_Main] = "Main"
 		, [objNpcState_COUNT] = 0
 	};
-	
-	GetName(my);
 	
 	/* default to 'Main' if given state doesn't exist */
 	if (!StateStr && !(StateStr = stateLUT[my->State]))
@@ -118,9 +100,6 @@ syOgmoEntityFuncDecl(Init)
 {
 	struct objNpc *my = ogmo->values;
 	
-	if (my->OnInit)
-		my->OnInit(syOgmoEntityFuncShareArgs);
-	
 	/* init */
 	sySpriteInit(&my->spriteBody, my, 0);
 	sySpriteInit(&my->spriteBlink, my, 0);
@@ -146,12 +125,16 @@ syOgmoEntityFuncDecl(Step)
 syOgmoEntityFuncDecl(Draw)
 {
 	struct objNpc *my = ogmo->values;
+	float x = my->x;
+	float y = my->y;
 	
-	sySpriteDraw(.sprite = &my->spriteBody, .x = ogmo->x, .y = ogmo->y);
+	ezrect(x, y, 16, 16, -1);
+	
+	sySpriteDraw(.sprite = &my->spriteBody, .x = x, .y = y);
 	if (my->isBlinking)
-		sySpriteDraw(.sprite = &my->spriteBlink, .x = ogmo->x, .y = ogmo->y);
+		sySpriteDraw(.sprite = &my->spriteBlink, .x = x, .y = y);
 	if (my->isTalking)
-		sySpriteDraw(.sprite = &my->spriteTalk, .x = ogmo->x, .y = ogmo->y);
+		sySpriteDraw(.sprite = &my->spriteTalk, .x = x, .y = y);
 	
 	return 0;
 }

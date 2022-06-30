@@ -67,6 +67,7 @@ static struct
 	int entityClassDbLen;
 	syOgmoExec funcKeyPrev;
 	struct syOgmoLayer *execLayer; /* current layer being executed */
+	struct syOgmoRoom *execRoom; /* current room being executed */
 } g = {
 	.error = myError
 };
@@ -79,6 +80,9 @@ struct syRoom
 
 static const struct syOgmoEntityClass *GetClass(syOgmoEntityClass class)
 {
+	if (!class)
+		return 0;
+	
 	assert(g.entityClassDb);
 	assert(class < g.entityClassDbLen);
 	
@@ -102,8 +106,11 @@ static struct syOgmoEntity *CloneEntityInto(struct syOgmoEntity *dst, const stru
 	{
 		const struct syOgmoEntityClass *class = GetClass(dst->valuesClass);
 		
-		assert(class->New);
-		dst->values = class->New(dst->values);
+		if (class)
+		{
+			assert(class->New);
+			dst->values = class->New(dst->values);
+		}
 	}
 	
 	if (dst->parent)
@@ -206,6 +213,11 @@ static syOgmoExecRetval ExecEntity(struct syOgmoEntity *entity, syOgmoExec funcK
 	g.funcKeyPrev = funcKey;
 	
 	class = GetClass(entity->valuesClass);
+	
+	/* empty entity */
+	if (!class)
+		return 0;
+	
 	funcs = class->funcs;
 	
 	assert(funcs);
@@ -452,6 +464,8 @@ void syRoomDraw(struct syRoom *r)
 	if (!layer)
 		return;
 	
+	g.execRoom = &r->ogmo;
+	
 	/* draw layers in reverse order */
 	layer += count - 1;
 	for (i = 0; i < count; --layer, ++i)
@@ -486,6 +500,7 @@ struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type, const void *values)
 	
 	class = GetClass(type);
 	
+	assert(class);
 	assert(class->New);
 	entity->values = class->New(values);
 	
@@ -514,6 +529,33 @@ int syOgmoEntityInheritEvent(struct syOgmoEntity *entity)
 	return 0;
 }
 
+void syOgmoEntityDelete(struct syOgmoEntity *inst)
+{
+	if (!inst)
+		return;
+	
+	if (!g.execRoom)
+		return;
+	
+	// TODO run syOgmoExec_Free routine
+	// TODO free(inst->values);
+	
+	/* XXX don't free inst b/c it could be inside an array;
+	 *     even the version inside a list can be marked as
+	 *     unused for reuse later!
+	 */
+	//free(inst);
+	
+	/* mark as unused */
+	{
+		void *next = inst->next;
+		
+		memset(inst, 0, sizeof(*inst));
+		
+		inst->next = next;
+	}
+}
+
 void syRoomExec(struct syRoom *r, syOgmoExec funcKey)
 {
 	assert(r);
@@ -524,6 +566,8 @@ void syRoomExec(struct syRoom *r, syOgmoExec funcKey)
 	
 	if (!layer)
 		return;
+	
+	g.execRoom = &r->ogmo;
 	
 	for (i = 0; i < count; ++layer, ++i)
 		ExecEntityLayer(layer, funcKey);

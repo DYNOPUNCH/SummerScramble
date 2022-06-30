@@ -37,6 +37,7 @@ int syOgmoDecalCount(const struct syOgmoDecal *array);
 int syOgmoEntityCount(const struct syOgmoEntity *array);
 struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type, const void *values);
 int syOgmoEntityInheritEvent(struct syOgmoEntity *entity);
+void syOgmoEntityDelete(struct syOgmoEntity *inst);
 
 /* public functions */
 

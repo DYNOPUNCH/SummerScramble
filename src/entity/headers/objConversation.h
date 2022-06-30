@@ -8,10 +8,14 @@
 #ifndef objConversation_H_INCLUDED
 #define objConversation_H_INCLUDED
 
+#include <objNpc.h>
+
 #include "common-includes.h"
 
 /* <ogmoenums> */
 /* </ogmoenums> */
+
+#define NPC_STACK_MAX  4
 
 /* <ogmostruct> */
 struct objConversation
@@ -22,7 +26,12 @@ struct objConversation
 	/* </ogmoblock> */
 	
 	/* custom user-defined variables go here */
+	const char *whoPtr;
+	char who[32];
 	struct Dialogue Dialogue;
+	struct objNpc *Npc[NPC_STACK_MAX];
+	struct syOgmoEntity *NpcInst;
+	float typewriter;
 };
 /* <ogmoblock1> */
 extern const struct objConversation objConversationDefaults;

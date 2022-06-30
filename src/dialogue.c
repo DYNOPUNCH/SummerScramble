@@ -17,7 +17,7 @@
 #define KEY_isQuestion  "isQuestion"
 #define KEY_option      "option"
 #define KEY_goto        "goto"
-#define KEY_character   "character"
+#define KEY_character   "who"
 #define KEY_emotion     "emotion"
 
 /* set up Dialogue based on syText contents */

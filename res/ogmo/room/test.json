@@ -78,25 +78,13 @@
           "name": "AnimationTest",
           "id": 6,
           "_eid": "41835963",
-          "x": 16,
-          "y": 32,
+          "x": -232,
+          "y": 48,
           "width": 16,
           "height": 16,
           "originX": 0,
           "originY": 0,
           "values": {"new_value": false}
-        },
-        {
-          "name": "Npc",
-          "id": 7,
-          "_eid": "58648975",
-          "x": 264,
-          "y": 248,
-          "width": 16,
-          "height": 16,
-          "originX": 0,
-          "originY": 0,
-          "values": {"Which": "Test", "State": "Main", "OnInit": "debug(\"OnInit\\n\");\ndebug(\"Hello world!\\n\");\nreturn 0;", "OnClick": "debug(\"OnClick\\n\");\nreturn 0;"}
         },
         {
           "name": "ConversationTrigger",
