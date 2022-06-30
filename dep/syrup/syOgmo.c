@@ -66,6 +66,7 @@ static struct
 	const struct syOgmoEntityClass **entityClassDb;
 	int entityClassDbLen;
 	syOgmoExec funcKeyPrev;
+	struct syOgmoLayer *execLayer; /* current layer being executed */
 } g = {
 	.error = myError
 };
@@ -239,6 +240,14 @@ static void ExecEntityList(struct syOgmoEntity *list, syOgmoExec funcKey)
 	
 	for (entity = list; entity; entity = entity->next)
 		ExecEntity(entity, funcKey);
+}
+
+static void ExecEntityLayer(struct syOgmoLayer *layer, syOgmoExec funcKey)
+{
+	g.execLayer = layer;
+	
+	ExecEntityArray(layer->entities, layer->entitiesCount, funcKey);
+	ExecEntityList(layer->spawnedEntities, funcKey);
 }
 
 static void DrawDecal(struct syOgmoDecal *decal)
@@ -447,8 +456,7 @@ void syRoomDraw(struct syRoom *r)
 	layer += count - 1;
 	for (i = 0; i < count; --layer, ++i)
 	{
-		ExecEntityArray(layer->entities, layer->entitiesCount, syOgmoExec_Draw);
-		ExecEntityList(layer->spawnedEntities, syOgmoExec_Draw);
+		ExecEntityLayer(layer, syOgmoExec_Draw);
 		DrawDecalArray(layer->decals, layer->decalsCount);
 	}
 }
@@ -484,6 +492,8 @@ struct syOgmoEntity *syOgmoEntityNew(syOgmoEntityClass type, const void *values)
 	if (class->parentClass)
 		entity->parent = syOgmoEntityNew(entity->parentClass, 0);
 	
+	syOgmoLayerAddInstance(g.execLayer, entity);	
+	
 	/* TODO consider 'Create' event */
 	//ExecEntity(entity, syOgmoExec_Create);
 	
@@ -516,9 +526,6 @@ void syRoomExec(struct syRoom *r, syOgmoExec funcKey)
 		return;
 	
 	for (i = 0; i < count; ++layer, ++i)
-	{
-		ExecEntityArray(layer->entities, layer->entitiesCount, funcKey);
-		ExecEntityList(layer->spawnedEntities, funcKey);
-	}
+		ExecEntityLayer(layer, funcKey);
 }
 
