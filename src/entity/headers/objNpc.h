@@ -36,6 +36,7 @@ struct objNpc
 	int blinkCountDown;
 	bool isBlinking;
 	bool isTalking;
+	int stackOrder;
 };
 /* <ogmoblock1> */
 extern const struct objNpc objNpcDefaults;

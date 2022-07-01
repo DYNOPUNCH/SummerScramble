@@ -44,6 +44,42 @@ static void *New(const void *src)
 }
 /* </ogmonew> */
 
+static int FuncSortNpcStack(const void *a_, const void *b_)
+{
+	const struct syOgmoEntity *a = *(const struct syOgmoEntity**)a_;
+	const struct syOgmoEntity *b = *(const struct syOgmoEntity**)b_;
+	const struct objNpc *av;
+	const struct objNpc *bv;
+	
+	if (!a || !(av = a->values))
+		return 1;
+	
+	if (!b || !(bv = b->values))
+		return -1;
+	
+	/*debug("a vs b : %p vs %p\n", a, b);
+	debug("av  bv : %p vs %p\n", av, bv);
+	debug("%d\n", av->stackOrder - bv->stackOrder);*/
+	
+	return av->stackOrder - bv->stackOrder;
+}
+
+static void SortNpcStack(struct objConversation *my)
+{
+	/* sort the stack */
+	//for (int i = 0; i < NPC_STACK_MAX; ++i)
+	//	debug("[p%d] = %p : %p\n", i, my->NpcInst[i], my->NpcInst[i] ? my->NpcInst[i]->values : 0);
+	qsort(my->NpcInst, NPC_STACK_MAX, sizeof(*my->NpcInst), FuncSortNpcStack);
+	
+	/* refresh handles for each */
+	for (int i = 0; i < NPC_STACK_MAX; ++i)
+	{
+		my->Npc[i] = 0;
+		
+		if (my->NpcInst[i])
+			my->Npc[i] = my->NpcInst[i]->values;
+	}
+}
 
 syOgmoEntityFuncDecl(Draw)
 {
@@ -52,20 +88,59 @@ syOgmoEntityFuncDecl(Draw)
 	
 	if (!DialogueFinished(d))
 	{
+		/* if the string representing who is speaking has changed */
 		if (my->whoPtr != d->character && strcmp(my->who, d->character))
 		{
+			bool matchFound = false;
+			
 			strcpy(my->who, d->character);
 			my->whoPtr = d->character;
 			fprintf(stderr, "%s\n", d->character);
 			//my->Npc[0] = syOgmo
-			my->NpcInst = syOgmoEntityNewWith(objNpc, .Name = my->who, .x = 480 / 2, .y = 270);
-			my->Npc[0] = my->NpcInst->values;
+			
+			// TODO allow explicitly deleting NPCs from the stack during a conversation
+			// (for example, one NPC leaves in the middle of a three-way conversation)
+			
+			/* check whether NPC already exists within stack */
+			for (int i = 0; i < NPC_STACK_MAX; ++i)
+			{
+				struct objNpc *walk = my->Npc[i];
+				
+				if (!walk)
+					continue;
+				
+				walk->stackOrder += 1;
+				
+				/* if it does, queue it back to the beginning */
+				if (matchFound == false && !strcmp(walk->Name, my->who))
+				{
+					matchFound = true;
+					walk->stackOrder = 0;
+				}
+			}
+			
+			/* update stack order in case any have shifted index */
+			SortNpcStack(my);
+			
+			/* no match found in stack */
+			if (matchFound == false)
+			{
+				/* overwrite whichever has been in the stack the longest (expired) */
+				my->NpcInst[NPC_STACK_MAX - 1] = syOgmoEntityNewWith(objNpc, .Name = my->who, .x = 480 / 2, .y = 270);
+				
+				/* move it back to the beginning */
+				SortNpcStack(my);
+			
+				/*for (int k = 0; k < NPC_STACK_MAX; ++k)
+					debug("[%d] = %p\n", k, my->NpcInst[k]);*/
+			}
 		}
 		
 		{
 			const struct syText *m = d->text;
 			const char *contents = syTextGetContents(m);
 			
+			/* stack is always ordered such that the speaker is the first */
 			my->Npc[0]->isTalking = strlen(contents) > my->typewriter;
 			
 			if (DebugButton(
@@ -100,10 +175,17 @@ syOgmoEntityFuncDecl(Draw)
 		}
 	}
 	
-	else if (my->NpcInst)
+	else if (true)
 	{
-		syOgmoEntityDelete(my->NpcInst);
-		my->NpcInst = 0;
+		for (int i = 0; i < NPC_STACK_MAX; ++i)
+		{
+			if (!my->NpcInst[i])
+				continue;
+			syOgmoEntityDelete(my->NpcInst[i]);
+			my->NpcInst[i] = 0;
+		}
+		
+		/* TODO delete self */
 	}
 	
 	while (false && !DialogueFinished(d))

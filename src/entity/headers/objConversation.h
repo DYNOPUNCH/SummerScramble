@@ -30,7 +30,7 @@ struct objConversation
 	char who[32];
 	struct Dialogue Dialogue;
 	struct objNpc *Npc[NPC_STACK_MAX];
-	struct syOgmoEntity *NpcInst;
+	struct syOgmoEntity *NpcInst[NPC_STACK_MAX];
 	float typewriter;
 };
 /* <ogmoblock1> */
