@@ -89,13 +89,13 @@ syOgmoEntityFuncDecl(Draw)
 	if (!DialogueFinished(d))
 	{
 		/* if the string representing who is speaking has changed */
-		if (my->whoPtr != d->character && strcmp(my->who, d->character))
+		if (my->whoPtr != d->portrait && strcmp(my->who, d->portrait))
 		{
 			bool matchFound = false;
 			
-			strcpy(my->who, d->character);
-			my->whoPtr = d->character;
-			fprintf(stderr, "%s\n", d->character);
+			strcpy(my->who, d->portrait);
+			my->whoPtr = d->portrait;
+			fprintf(stderr, "%s\n", d->portrait);
 			//my->Npc[0] = syOgmo
 			
 			// TODO allow explicitly deleting NPCs from the stack during a conversation

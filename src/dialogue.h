@@ -20,6 +20,7 @@ struct Dialogue
 {
 	const struct syText *text;
 	const char *character; /* who is speaking */
+	const char *portrait; /* portrait to display */
 	const char *emotion; /* how they feel */
 	struct DialogueOption *option;
 	int optionNum;

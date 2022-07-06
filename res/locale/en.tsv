@@ -1,15 +1,16 @@
-~	Menu					
-file	File					
-edit	Edit					
-view	View					
-~	Conversations	who	isEnd	isQuestion	option	goto
-hello	Hello!	Paulo				
-	Fancy seeing you here!	Paulo				
-	Where are you headed?	Paulo		y	Town	town
-					Pond	pond
-					Field	field
-town	Have a good outing!	Paulo	y			
-pond	I hear the fish are biting today!	Paulo	y			
-field	Pack some bugspray if you're headed that way.	Paulo	y			
-jptest	Obligatory UTF-8 test...	Paulo				
-	ハローワールド	Paulo	y			
+~	Menu						
+file	File						
+edit	Edit						
+view	View						
+~	Conversations	who	portrait	isEnd	isQuestion	option	goto
+hello	Hello!	Paulo	Paulo				
+	Fancy seeing you here!	Paulo	Paulo				
+	Where are you headed?	Paulo	Paulo		y	Town	town
+						Pond	pond
+						Field	field
+	You might opt to organize your thoughts here.						
+town	Have a good outing!	Paulo	Paulo	y			
+pond	I hear the fish are biting today!	Paulo	Paulo	y			
+field	Pack some bugspray if you're headed that way.	Paulo	Paulo	y			
+jptest	Obligatory UTF-8 test...	Paulo	Paulo				
+	ハローワールド	Paulo	Paulo	y			

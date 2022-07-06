@@ -18,6 +18,7 @@
 #define KEY_option      "option"
 #define KEY_goto        "goto"
 #define KEY_character   "who"
+#define KEY_portrait    "portrait"
 #define KEY_emotion     "emotion"
 
 /* set up Dialogue based on syText contents */
@@ -32,6 +33,7 @@ static void MakeFromSyText(struct Dialogue *dst, const struct syText *src)
 	/* misc parameters */
 	dst->text = src;
 	dst->character = syTextGetUdataColumnValue(src, KEY_character);
+	dst->portrait = syTextGetUdataColumnValue(src, KEY_portrait);
 	dst->emotion = syTextGetUdataColumnValue(src, KEY_emotion);
 	dst->isEnd = syTextGetUdataColumnValue(src, KEY_isEnd) != 0;
 	dst->isQuestion = syTextGetUdataColumnValue(src, KEY_isQuestion) != 0;
