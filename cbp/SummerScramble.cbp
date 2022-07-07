@@ -103,7 +103,7 @@
 		<Unit filename="../src/entity/headers/objDebugLabel.h" />
 		<Unit filename="../src/entity/headers/objExample.h" />
 		<Unit filename="../src/entity/headers/objGoToRoom.h" />
-		<Unit filename="../src/entity/headers/objNpc.h" />
+		<Unit filename="../src/entity/headers/objPortrait.h" />
 		<Unit filename="../src/entity/objAnimationTest.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -122,7 +122,7 @@
 		<Unit filename="../src/entity/objGoToRoom.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/entity/objNpc.c">
+		<Unit filename="../src/entity/objPortrait.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/game.c">

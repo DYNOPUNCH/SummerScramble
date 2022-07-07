@@ -214,7 +214,7 @@
     },
     {
       "exportID": "58648975",
-      "name": "Npc",
+      "name": "Portrait",
       "limit": -1,
       "size": {"x": 16, "y": 16},
       "origin": {"x": 0, "y": 0},

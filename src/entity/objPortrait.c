@@ -1,15 +1,14 @@
 /* 
- * objNpc.c <SummerScramble>
+ * objPortrait.c <SummerScramble>
  * 
- * the primary NPC object
+ * this object displays NPC portraits
  * 
  */
 
-#include <objNpc.h>
-#include <objNpcHooks.h>
+#include <objPortrait.h>
 
 /* <ogmodefaults> */
-const struct objNpc objNpcDefaults = 
+const struct objPortrait objPortraitDefaults = 
 {
 	/* <ogmoblock> */
 	.State = 0
@@ -38,7 +37,7 @@ static const char *Fmt(const char *fmt, ...)
 
 static void BlinkOnLoop(struct sySprite *caller)
 {
-	struct objNpc *owner;
+	struct objPortrait *owner;
 	
 	owner = caller->owner;
 	
@@ -54,19 +53,19 @@ static void BlinkOnLoop(struct sySprite *caller)
 		owner->isBlinking = false;
 }
 
-static void SetupFrames(struct objNpc *my, const char *StateStr)
+static void SetupFrames(struct objPortrait *my, const char *StateStr)
 {
 	const char *stateLUT[] =
 	{
-		[objNpcState_Main] = "Main"
-		, [objNpcState_COUNT] = 0
+		[objPortraitState_Main] = "Main"
+		, [objPortraitState_COUNT] = 0
 	};
 	
 	/* default to 'Main' if given state doesn't exist */
 	if (!StateStr && !(StateStr = stateLUT[my->State]))
 		StateStr = "Main";
 	
-#define S(FEATURE) sySpriteSetAnimationString(&my->sprite##FEATURE, Fmt("Npc/%s/%s/%s", my->Name, #FEATURE, StateStr))
+#define S(FEATURE) sySpriteSetAnimationString(&my->sprite##FEATURE, Fmt("Portrait/%s/%s/%s", my->Name, #FEATURE, StateStr))
 	S(Body);
 	S(Blink);
 	S(Talk);
@@ -78,12 +77,12 @@ static void SetupFrames(struct objNpc *my, const char *StateStr)
 static void *New(const void *src)
 {
 	/* <ogmoblock> */
-	struct objNpc *my = MALLOC(sizeof(*my));
+	struct objPortrait *my = MALLOC(sizeof(*my));
 	
 	assert(my);
 	
 	if (!src)
-		src = &objNpcDefaults;
+		src = &objPortraitDefaults;
 	
 	memcpy(my, src, sizeof(*my));
 	/* </ogmoblock> */
@@ -98,7 +97,7 @@ static void *New(const void *src)
 
 syOgmoEntityFuncDecl(Init)
 {
-	struct objNpc *my = ogmo->values;
+	struct objPortrait *my = ogmo->values;
 	
 	/* init */
 	sySpriteInit(&my->spriteBody, my, 0);
@@ -112,7 +111,7 @@ syOgmoEntityFuncDecl(Init)
 
 syOgmoEntityFuncDecl(Step)
 {
-	struct objNpc *my = ogmo->values;
+	struct objPortrait *my = ogmo->values;
 	
 	/* step */
 	sySpriteStep(&my->spriteBody);
@@ -124,7 +123,7 @@ syOgmoEntityFuncDecl(Step)
 
 syOgmoEntityFuncDecl(Draw)
 {
-	struct objNpc *my = ogmo->values;
+	struct objPortrait *my = ogmo->values;
 	float x = my->x;
 	float y = my->y;
 	
@@ -140,7 +139,7 @@ syOgmoEntityFuncDecl(Draw)
 }
 
 /* <ogmoclass> */
-const struct syOgmoEntityClass objNpcClass = {
+const struct syOgmoEntityClass objPortraitClass = {
 	.New = New
 	, .funcs = (syOgmoEntityFunc[]){
 		[syOgmoExec_Init] = Init

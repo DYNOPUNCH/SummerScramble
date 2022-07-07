@@ -6,7 +6,7 @@
  */
 
 #include <objConversation.h>
-#include <objNpc.h>
+#include <objPortrait.h>
 
 /* <ogmodefaults> */
 const struct objConversation objConversationDefaults = 
@@ -44,12 +44,12 @@ static void *New(const void *src)
 }
 /* </ogmonew> */
 
-static int FuncSortNpcStack(const void *a_, const void *b_)
+static int FuncSortPortraitStack(const void *a_, const void *b_)
 {
 	const struct syOgmoEntity *a = *(const struct syOgmoEntity**)a_;
 	const struct syOgmoEntity *b = *(const struct syOgmoEntity**)b_;
-	const struct objNpc *av;
-	const struct objNpc *bv;
+	const struct objPortrait *av;
+	const struct objPortrait *bv;
 	
 	if (!a || !(av = a->values))
 		return 1;
@@ -64,20 +64,20 @@ static int FuncSortNpcStack(const void *a_, const void *b_)
 	return av->stackOrder - bv->stackOrder;
 }
 
-static void SortNpcStack(struct objConversation *my)
+static void SortPortraitStack(struct objConversation *my)
 {
 	/* sort the stack */
-	//for (int i = 0; i < NPC_STACK_MAX; ++i)
-	//	debug("[p%d] = %p : %p\n", i, my->NpcInst[i], my->NpcInst[i] ? my->NpcInst[i]->values : 0);
-	qsort(my->NpcInst, NPC_STACK_MAX, sizeof(*my->NpcInst), FuncSortNpcStack);
+	//for (int i = 0; i < PORTRAIT_STACK_MAX; ++i)
+	//	debug("[p%d] = %p : %p\n", i, my->PortraitInst[i], my->PortraitInst[i] ? my->PortraitInst[i]->values : 0);
+	qsort(my->PortraitInst, PORTRAIT_STACK_MAX, sizeof(*my->PortraitInst), FuncSortPortraitStack);
 	
 	/* refresh handles for each */
-	for (int i = 0; i < NPC_STACK_MAX; ++i)
+	for (int i = 0; i < PORTRAIT_STACK_MAX; ++i)
 	{
-		my->Npc[i] = 0;
+		my->Portrait[i] = 0;
 		
-		if (my->NpcInst[i])
-			my->Npc[i] = my->NpcInst[i]->values;
+		if (my->PortraitInst[i])
+			my->Portrait[i] = my->PortraitInst[i]->values;
 	}
 }
 
@@ -96,15 +96,15 @@ syOgmoEntityFuncDecl(Draw)
 			strcpy(my->who, d->portrait);
 			my->whoPtr = d->portrait;
 			fprintf(stderr, "%s\n", d->portrait);
-			//my->Npc[0] = syOgmo
+			//my->Portrait[0] = syOgmo
 			
 			// TODO allow explicitly deleting NPCs from the stack during a conversation
 			// (for example, one NPC leaves in the middle of a three-way conversation)
 			
 			/* check whether NPC already exists within stack */
-			for (int i = 0; i < NPC_STACK_MAX; ++i)
+			for (int i = 0; i < PORTRAIT_STACK_MAX; ++i)
 			{
-				struct objNpc *walk = my->Npc[i];
+				struct objPortrait *walk = my->Portrait[i];
 				
 				if (!walk)
 					continue;
@@ -120,19 +120,19 @@ syOgmoEntityFuncDecl(Draw)
 			}
 			
 			/* update stack order in case any have shifted index */
-			SortNpcStack(my);
+			SortPortraitStack(my);
 			
 			/* no match found in stack */
 			if (matchFound == false)
 			{
 				/* overwrite whichever has been in the stack the longest (expired) */
-				my->NpcInst[NPC_STACK_MAX - 1] = syOgmoEntityNewWith(objNpc, .Name = my->who, .x = 480 / 2, .y = 270);
+				my->PortraitInst[PORTRAIT_STACK_MAX - 1] = syOgmoEntityNewWith(objPortrait, .Name = my->who, .x = 480 / 2, .y = 270);
 				
 				/* move it back to the beginning */
-				SortNpcStack(my);
+				SortPortraitStack(my);
 			
-				/*for (int k = 0; k < NPC_STACK_MAX; ++k)
-					debug("[%d] = %p\n", k, my->NpcInst[k]);*/
+				/*for (int k = 0; k < PORTRAIT_STACK_MAX; ++k)
+					debug("[%d] = %p\n", k, my->PortraitInst[k]);*/
 			}
 		}
 		
@@ -141,7 +141,7 @@ syOgmoEntityFuncDecl(Draw)
 			const char *contents = syTextGetContents(m);
 			
 			/* stack is always ordered such that the speaker is the first */
-			my->Npc[0]->isTalking = strlen(contents) > my->typewriter;
+			my->Portrait[0]->isTalking = strlen(contents) > my->typewriter;
 			
 			if (DebugButton(
 					0
@@ -177,12 +177,12 @@ syOgmoEntityFuncDecl(Draw)
 	
 	else if (true)
 	{
-		for (int i = 0; i < NPC_STACK_MAX; ++i)
+		for (int i = 0; i < PORTRAIT_STACK_MAX; ++i)
 		{
-			if (!my->NpcInst[i])
+			if (!my->PortraitInst[i])
 				continue;
-			syOgmoEntityDelete(my->NpcInst[i]);
-			my->NpcInst[i] = 0;
+			syOgmoEntityDelete(my->PortraitInst[i]);
+			my->PortraitInst[i] = 0;
 		}
 		
 		/* TODO delete self */
